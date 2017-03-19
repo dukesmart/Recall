@@ -1,1 +1,6 @@
 /* Stylesheet for Recall project templates */
+
+.center{
+	margin-left: auto;
+	margin-right: auto;
+}

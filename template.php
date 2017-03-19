@@ -8,7 +8,7 @@ $template_header =
 </head>
 <body>';
 
-$template_end =
+$template_footer =
 '</body>
 </html>';
 ?>

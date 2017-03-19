@@ -6,7 +6,7 @@ echo $template_header;
 /* Check to see if the required variables were set */
 if(!isset($_POST['email']) || !isset($_POST['password'])) {
 	echo <<<HERE
-<form name="login" action=" method="POST">
+<form name="login" action="" method="POST">
 <table class="center">
 		<tr>
 		<td>Email Address: </td>
@@ -23,7 +23,7 @@ if(!isset($_POST['email']) || !isset($_POST['password'])) {
 </table>
 </form>
 HERE;
-	echo $template_end;
+	$template_footer;
 	exit();
 } else {
 	$email_address = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -35,7 +35,7 @@ $mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password
 if (!$mysql_connection) {
 	/* Couldn't connect */
 	echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
-	echo $template_end;
+	echo $template_footer;
 	exit;
 } else {
 	/* Connected */
@@ -43,14 +43,14 @@ if (!$mysql_connection) {
 	/* There are 0 results if there are no matching email/password combinations */
 	if($query_result->num_rows == 0) {
 		echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>';
-		echo $template_end;
+		echo $template_footer;
 		exit();
 	}
 	/* User exists, continue */
 	$user = $query_result->fetch_assoc();
-	echo '<p>Welcome, ' . $user['firstname'] . ' ' . $user['lastname'] . '</p>';
+	echo "<p>Welcome, " . $user['firstname'] . " " . $user['lastname'] . ".</p>";
 	mysqli_close($mysql_connection);
-	echo $template_end;
+	echo $template_footer;
 }
 
 ?>

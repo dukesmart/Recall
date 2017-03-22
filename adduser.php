@@ -8,15 +8,16 @@
 
 global $user_firstname, $user_lastname, $user_email, $user_phone, $user_hashed_password, $user_privilege; 
 echo $template_header;
+echo $_POST['firstname'] . ' ' . $_POST['lastname'] . ' ' . $_POST['email'] . ' ' . $_POST['password1'] . ' ' . $_POST['password2'];
 check_post();
 
 /**
  * Check POST variables to see if are contents to submit.
  */
 function check_post() {
-	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['phone']) || !isset($_POST['password']) || 
-		($_POST['firstname'] == "") || ($_POST['lastname'] == "") || ($_POST['email'] == "") || ($_POST['phone'] == "") || ($_POST['password'] == "")) {
-			display_unsubmitted_page_contents();
+	global $_POST;
+	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['password1']) || !isset($_POST['password2'])) {
+		display_unsubmitted_page_contents();
 		echo $template_footer;
 		exit();
 	} else {
@@ -28,15 +29,45 @@ function check_post() {
  * Sets variables, connects to database, and inserts contents into database.
  */
 function submit() {
+	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
+	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
 	check_vars();
-	/* Connect to the MySQL server */
-	$mysql_connection = connect();
-	if(!$mysql_connection){
-		exit();
-	}
 	
-	/* Connected */
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES (`" . $user_hashed_password . "`, `" . $user_privilege . "`, `" . $user_firstname . "`, `" . $user_lastname . "`, `" . $user_email . "`, `" . $user_phone . "`, `" . $user_billetid . "`);");
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "');");
+		if($query_result) {
+			echo '<p>Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</p>';
+		} else {
+			echo '<p>Success! </p><p class="error1">Error: Could not add user to database.</p>';
+		}
+	}
+}
+
+
+/**
+ * Filter submitted contents and set the variables locally.
+ */
+function check_vars() {
+	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
+	$user_firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
+	$user_lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
+	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
+	$user_phone = filter_var(strtolower($_POST['phone']), FILTER_SANITIZE_STRING);
+	$user_privilege = filter_var($_POST['privilege'], FILTER_SANITIZE_NUMBER_INT);
+	
+	if($_POST['password1'] == $_POST['password2']) {
+		$user_hashed_password = filter_var(hash('sha256', $_POST['password1']), FILTER_SANITIZE_STRING);
+	} else {
+		echo '<p class="error0">Passwords do not match. <a href="adduser.php">Retry</a></p>';
+	}
 }
 
 /**
@@ -96,17 +127,5 @@ function display_unsubmitted_page_contents() {
 		</table>
 </form>';
 	echo '<p><a href="index.php">Return</a></p>';
-}
-
-/**
- * Filter submitted contents and set the variables locally.
- */
-function check_vars() {
-	$user_firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
-	$user_lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
-	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
-	$user_phone = filter_var(strtolower($_POST['phone']), FILTER_SANITIZE_STRING);
-	$user_hashed_password = filter_var(hash('sha256', $_POST['password']), FILTER_SANITIZE_STRING);
-	$user_privilege = filter_var($_POST['privilege'], FILTER_SANITIZE_NUMBER_INT);
 }
 ?>

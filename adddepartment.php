@@ -42,7 +42,7 @@ function submit() {
 		/* Connected */
 		$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES ('" . $department_name . "');");
 		if($query_result) {
-			echo '<p>Success: ' . $department_name . " added.</p>";
+			echo '<p>Success: ' . $department_name . ' added.</p>';
 		} else {
 			echo '<p>Success! </p><p class="error1">Error: Could not add department to database.</p>';
 		}

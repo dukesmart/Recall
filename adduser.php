@@ -37,7 +37,11 @@ if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['e
 				</td>
 				<tr>
 				<td>Billet:</td>
-				<td></td>
+				<td>
+					<select name="billetid">
+						' . /* TODO: Dynamically generate billet list*/ '
+					</select>
+				</td>
 				</tr>
 				<tr>
 				<td>Password:</td>

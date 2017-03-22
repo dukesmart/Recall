@@ -28,7 +28,7 @@ function check_post() {
  * Sets variables, connects to database, and inserts contents into database.
  */
 function submit() {
-	set_post_vars();
+	check_vars();
 	/* Connect to the MySQL server */
 	$mysql_connection = connect();
 	if(!$mysql_connection){
@@ -95,12 +95,13 @@ function display_unsubmitted_page_contents() {
 				</tr>
 		</table>
 </form>';
+	echo '<p><a href="index.php">Return</a></p>';
 }
 
 /**
  * Filter submitted contents and set the variables locally.
  */
-function set_post_vars() {
+function check_vars() {
 	$user_firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
 	$user_lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
 	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);

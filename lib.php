@@ -1,9 +1,13 @@
 <?php
+/**
+ * This is a library of functions that are used accross several pages.
+ */
+
 @include 'config.php';
 @include 'template.php';
 
 /**
- * 
+ * Connect to the MySQL server
  */
 function connect() {
 	$connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);

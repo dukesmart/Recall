@@ -1,5 +1,58 @@
 <?php
+/**
+ * This page is the page in which an administrator may start a recall.
+ */
+
 @include 'config.php';
 @include 'template.php';
 
+echo $template_header;
+echo '<p><a href="index.php">Return</a></p>';
+echo $template_footer;
+check_post();
+
+/**
+ *  Check POST variables to see if are contents to submit.
+ */
+function check_post() {
+	
+}
+
+/**
+ * Sets variables, connects to database, submits query to database.
+ */
+function submit() {
+	check_vars();
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = connect();
+	if(!$mysql_connection){
+		exit();
+	}
+	
+	display_submitted_page_contents();
+	
+	mysqli_close();
+}
+
+/**
+ * Filter submitted contents and set the variables locally.
+ */
+function check_vars() {
+	
+}
+
+/**
+ * Display the contents of the page after the form has been submitted.
+ */
+function display_submitted_page_contents() {
+
+}
+
+/**
+ * Display the submission form page contents.
+ */
+function display_unsubmitted_page_contents() {
+	
+}
 ?>

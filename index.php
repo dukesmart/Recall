@@ -31,26 +31,23 @@ HERE;
 }
 
 /* Connect to the MySQL server */
-$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-if (!$mysql_connection) {
-	/* Couldn't connect */
-	echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
-	echo $template_footer;
-	exit;
-} else {
-	/* Connected */
-	$query_result = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "' AND password='" . $hashed_password . "';");
-	/* There are 0 results if there are no matching email/password combinations */
-	if($query_result->num_rows == 0) {
-		echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>';
-		echo $template_footer;
-		exit();
-	}
-	/* User exists, continue */
-	$user = $query_result->fetch_assoc();
-	echo "<p>Welcome, " . $user['firstname'] . " " . $user['lastname'] . ".</p>";
-	mysqli_close($mysql_connection);
-	echo $template_footer;
+$mysql_connection = connect();
+if(!$mysql_connection){
+	exit();
 }
+
+/* Connected */
+$query_result = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "' AND password='" . $hashed_password . "';");
+/* There are 0 results if there are no matching email/password combinations */
+if($query_result->num_rows == 0) {
+	echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>';
+	echo $template_footer;
+	exit();
+}
+/* User exists, continue */
+$user = $query_result->fetch_assoc();
+echo "<p>Welcome, " . $user['firstname'] . " " . $user['lastname'] . ".</p>";
+mysqli_close($mysql_connection);
+echo $template_footer;
 
 ?>

@@ -37,15 +37,11 @@ if(!isset($_POST['departmentname']) || !isset($_POST['rootbillet']) || ($_POST['
 }
 
 /* Connect to the MySQL server */
-$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-if (!$mysql_connection) {
-	/* Couldn't connect */
-	echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
-	echo $template_footer;
-	exit;
-} else {
-	/* Connected */
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES (`" . $department_name . "`);");
-
+$mysql_connection = connect();
+if(!$mysql_connection){
+	exit();
 }
+
+/* Connected */
+$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES (`" . $department_name . "`);");
 ?>

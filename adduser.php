@@ -69,15 +69,12 @@ if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['e
 }
 
 /* Connect to the MySQL server */
-$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-if (!$mysql_connection) {
-	/* Couldn't connect */
-	echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
-	echo $template_footer;
-	exit;
-} else {
-	/* Connected */
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES (`" . $user_hashed_password . "`, `" . $user_privilege . "`, `" . $user_firstname . "`, `" . $user_lastname . "`, `" . $user_email . "`, `" . $user_phone . "`, `" . $user_billetid . "`);");
-	
+$mysql_connection = connect();
+if(!$mysql_connection){
+	exit();
 }
+
+/* Connected */
+$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES (`" . $user_hashed_password . "`, `" . $user_privilege . "`, `" . $user_firstname . "`, `" . $user_lastname . "`, `" . $user_email . "`, `" . $user_phone . "`, `" . $user_billetid . "`);");
+
 ?>

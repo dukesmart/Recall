@@ -1,5 +1,5 @@
 <?php
-@include template.php;
-@include config.php;
+@include 'config.php';
+@include 'template.php';
 
 ?>

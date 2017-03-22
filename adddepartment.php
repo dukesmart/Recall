@@ -1,9 +1,10 @@
 <?php
-@include template.php;
-@include config.php;
+@include 'config.php';
+@include 'template.php';
 
 echo $template_header;
 if(!isset($_POST['departmentname']) || !isset($_POST['rootbillet']) || ($_POST['departmentname'] == "") || ($_POST['rootbillet'] == "")) {
+	echo $template_header;
 	echo '<form name="adddepartmentform" action="adddepartment.php" method="POST">
 		<table class="center">
 				<tr>
@@ -30,6 +31,7 @@ if(!isset($_POST['departmentname']) || !isset($_POST['rootbillet']) || ($_POST['
 	echo $template_footer;
 	exit();
 } else {
+	echo $template_header;
 	$department_name = filter_var($_POST['departmentname'], FILTER_SANITIZE_STRING);
 	//$department_root_billet = filter_var($_POST['rootbillet'], FILTER_SANITIZE_NUMBER_INT);
 }

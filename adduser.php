@@ -1,6 +1,6 @@
 <?php
-@include template.php;
-@include config.php;
+@include 'config.php';
+@include 'template.php';
 
 echo $template_header;
 if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['phone']) || !isset($_POST['password']) || 

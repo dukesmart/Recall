@@ -1,6 +1,6 @@
 <?php
-@include template.php;
-@include config.php;
+@include 'config.php';
+@include 'template.php';
 
 echo $template_header;
 if(!isset($_POST['billetname']) || ($_POST['billetname'] == "") || !isset($_POST['department']) || ($_POST['department'] == "")) {

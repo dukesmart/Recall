@@ -1,6 +1,6 @@
 <?php
-@include config.php;
-@include template.php;
+@include 'config.php';
+@include 'template.php';
 
 if(!isset($_GET['id'])) {
 	echo $template_header;

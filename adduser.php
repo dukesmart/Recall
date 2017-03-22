@@ -6,6 +6,7 @@
 @include 'config.php';
 @include 'template.php';
 
+global $user_firstname, $user_lastname, $user_email, $user_phone, $user_hashed_password, $user_privilege; 
 echo $template_header;
 check_post();
 
@@ -39,7 +40,7 @@ function submit() {
 }
 
 /**
- * Display the form to submit contents.
+ * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
 	echo '<form name="adduserform" action="adduser.php" method="POST">

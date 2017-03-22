@@ -8,8 +8,6 @@
 
 echo $template_header;
 
-echo $_POST['departmentname'];
-echo $_POST['rootbillet'];
 check_post();
 
 /**

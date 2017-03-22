@@ -6,15 +6,18 @@
 @include 'config.php';
 @include 'template.php';
 
-global $department_name, $department_root_billet;
 echo $template_header;
+
+echo $_POST['departmentname'];
+echo $_POST['rootbillet'];
 check_post();
 
 /**
  * Check POST variables to see if are contents to submit.
  */
 function check_post() {
-	if(!isset($_POST['departmentname']) || !isset($_POST['rootbillet']) || ($_POST['departmentname'] == "") || ($_POST['rootbillet'] == "")) {
+	global $_POST;
+	if(!isset($_POST['departmentname']) /*|| !isset($_POST['rootbillet'])*/) {
 		display_unsubmitted_page_contents();
 		echo $template_footer;
 		exit();
@@ -27,23 +30,36 @@ function check_post() {
  * Sets variables, connects to database, and inserts contents into database.
  */
 function submit() {
+	global $mysql_connection, $department_name, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	check_vars();
+	
 	/* Connect to the MySQL server */
-	$mysql_connection = connect();
-	if(!$mysql_connection){
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
+		echo $template_footer;
 		exit();
+	} else {
+		/* Connected */
+		$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES ('" . $department_name . "');");
+		if($query_result) {
+			echo '<p>Success: ' . $department_name . " added.</p>";
+		} else {
+			echo '<p>Success! </p><p class="error1">Error: Could not add department to database.</p>';
+		}
+		display_submitted_page_contents();
+		
+		mysqli_close();
 	}
-	
-	/* Connected */
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES (`" . $department_name . "`);");
-	display_submitted_page_contents();
-	
-	mysqli_close();
 }
 
 /**
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
+	global $department_name, $department_root_billet;
+	
 	$department_name = filter_var($_POST['departmentname'], FILTER_SANITIZE_STRING);
 	//$department_root_billet = filter_var($_POST['rootbillet'], FILTER_SANITIZE_NUMBER_INT);
 }
@@ -52,14 +68,18 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-
+	echo '<table class="left">
+			<tr><td><a href="adddepartment.php">Add another department</a></td></tr>
+			<tr><td><a href="index.php">Return</a></td></tr>
+		</table>';
+	echo $template_footer;
 }
 
 /**
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	echo '<form name="adddepartmentform" action="adddepartment.php" method="POST">
+	echo '<form name="adddepartmentform" action="" method="POST">
 		<table class="center">
 				<tr>
 				<td colspan="2">Add a new Department</td>
@@ -71,9 +91,6 @@ function display_unsubmitted_page_contents() {
 				<tr>
 				<td>Root Billet:</td>
 				<td>
-					<select name="department">
-						' . /* TODO: Dynamically generate billet list*/ '
-					</select>
 				</td>
 				</tr>
 				<tr>

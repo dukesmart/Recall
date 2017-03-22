@@ -1,10 +1,47 @@
 <?php
+/**
+ * This page is used for adding new users to the database.
+ */
+
 @include 'config.php';
 @include 'template.php';
 
 echo $template_header;
-if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['phone']) || !isset($_POST['password']) || 
+check_post();
+
+/**
+ * Check POST variables to see if are contents to submit.
+ */
+function check_post() {
+	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['phone']) || !isset($_POST['password']) || 
 		($_POST['firstname'] == "") || ($_POST['lastname'] == "") || ($_POST['email'] == "") || ($_POST['phone'] == "") || ($_POST['password'] == "")) {
+			display_unsubmitted_page_contents();
+		echo $template_footer;
+		exit();
+	} else {
+		submit();
+	}
+}
+
+/**
+ * Sets variables, connects to database, and inserts contents into database.
+ */
+function submit() {
+	set_post_vars();
+	/* Connect to the MySQL server */
+	$mysql_connection = connect();
+	if(!$mysql_connection){
+		exit();
+	}
+	
+	/* Connected */
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES (`" . $user_hashed_password . "`, `" . $user_privilege . "`, `" . $user_firstname . "`, `" . $user_lastname . "`, `" . $user_email . "`, `" . $user_phone . "`, `" . $user_billetid . "`);");
+}
+
+/**
+ * Display the form to submit contents.
+ */
+function display_unsubmitted_page_contents() {
 	echo '<form name="adduserform" action="adduser.php" method="POST">
 		<table class="center">
 				<tr>
@@ -57,9 +94,12 @@ if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['e
 				</tr>
 		</table>
 </form>';
-	echo $template_footer;
-	exit();
-} else {
+}
+
+/**
+ * Filter submitted contents and set the variables locally.
+ */
+function set_post_vars() {
 	$user_firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
 	$user_lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
 	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -67,14 +107,4 @@ if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['e
 	$user_hashed_password = filter_var(hash('sha256', $_POST['password']), FILTER_SANITIZE_STRING);
 	$user_privilege = filter_var($_POST['privilege'], FILTER_SANITIZE_NUMBER_INT);
 }
-
-/* Connect to the MySQL server */
-$mysql_connection = connect();
-if(!$mysql_connection){
-	exit();
-}
-
-/* Connected */
-$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES (`" . $user_hashed_password . "`, `" . $user_privilege . "`, `" . $user_firstname . "`, `" . $user_lastname . "`, `" . $user_email . "`, `" . $user_phone . "`, `" . $user_billetid . "`);");
-
 ?>

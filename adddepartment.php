@@ -1,6 +1,7 @@
 <?php
 /**
  * This is the page in which an administrator may add new departments.
+ * @package adddepartment.php
  */
 
 @include 'config.php';

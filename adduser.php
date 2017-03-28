@@ -1,6 +1,7 @@
 <?php
 /**
  * This page is used for adding new users to the database.
+ * @package adduser.php
  */
 
 @include 'config.php';

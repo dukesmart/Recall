@@ -1,6 +1,7 @@
 <?php
 /**
  * This is the page in which a user confirms his or her status.
+ * @package confirm.php
  */
 @include 'config.php';
 @include 'template.php';

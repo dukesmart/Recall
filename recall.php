@@ -1,6 +1,7 @@
 <?php
 /**
  * This page is the page in which an administrator may start a recall.
+ * @package recall.php
  */
 
 @include 'config.php';

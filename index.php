@@ -1,6 +1,7 @@
 <?php
 /**
  * This is the login page, and the start of the website.
+ * @package index.php
 */
 
 @include 'config.php';

@@ -1,5 +1,9 @@
 <?php
-$template_header = 
+/*
+ * This file is used as a template and structure for designing other pages.
+ * @package template.php
+ */
+ $template_header = 
 '<html>
 <head>
 	<title>Recall</title>

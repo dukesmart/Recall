@@ -1,6 +1,7 @@
 <?php
 /**
  * This is a library of functions that are used accross several pages.
+ * @package lib.php
  */
 
 @include 'config.php';

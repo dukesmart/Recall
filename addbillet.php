@@ -1,6 +1,7 @@
 <?php
 /**
  * This page is used for adding new billets to the database.
+ * @package addbillet.php
  */
 @include 'config.php';
 @include 'template.php';

@@ -28,7 +28,7 @@ function submit() {
 	check_vars();
 
 	/* Connect to the MySQL server */
-	$mysql_connection = connect();
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 	if(!$mysql_connection){
 		exit();
 	}

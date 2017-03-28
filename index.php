@@ -100,7 +100,7 @@ function display_submitted_page_contents($query_result) {
 	echo '<div class="content-container">';
 	echo '<p>Welcome, ' . $user['firstname'] . ' ' . $user['lastname'] . '.</p>';
 	if($user['privilege'] >= 2) {
-		echo '<form name="search" action="search.php">' . PHP_EOL;
+		echo '<form name="search" action="search.php" method="GET">' . PHP_EOL;
 		echo '<input type="text" name="searchquery" value="Search..." />' . PHP_EOL;
 		echo '<input type="submit" name="submit" value="Search" />' . PHP_EOL;
 		echo '</form>' . PHP_EOL;

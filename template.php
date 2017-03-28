@@ -15,4 +15,6 @@
 $template_footer =
 '</body>
 </html>';
+
+$mysql_error_connect = '<p class="error0">Error: Unable to connect to MySQL.</p>' . PHP_EOL;
 ?>

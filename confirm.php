@@ -25,6 +25,7 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
+	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	check_vars();
 
 	/* Connect to the MySQL server */

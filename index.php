@@ -27,14 +27,15 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
-	global $mysql_connection, $email_address, $hashed_password, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $mysql_error_connect, $template_footer;
+	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $email_address, $hashed_password, $query_result;
 	check_vars();
 	
 	/* Connect to the MySQL server */
 	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 	if (!$mysql_connection) {
 		/* Couldn't connect */
-		echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
+		echo $mysql_error_connect;
 		echo $template_footer;
 		exit;
 	} else {

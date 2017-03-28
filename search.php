@@ -23,20 +23,24 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
+	global $mysql_error_connect, $template_footer;
+	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	check_vars();
 	
 	/* Connect to the MySQL server */
 	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if(!$mysql_connection){
-		exit();
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect;
+		echo $template_footer;
+		exit;
+	} else {
+		/* Connected */
+		// TODO Search
+		display_submitted_page_contents();
+		
+		mysqli_close();
 	}
-	
-	/* Connected */
-	/* TODO Search */
-	
-	display_submitted_page_contents();
-	
-	mysqli_close();
 }
 
 /**
@@ -60,10 +64,10 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
+	global $template_header, $template_footer;
 	echo $template_header;
 	echo '<p>You must be participating in a recall to submit a confirmation.</p>';
 	echo $template_footer;
 }
 
-?>
 ?>

@@ -5,6 +5,34 @@
 	margin-right: auto;
 }
 
+.left-container {
+	margin-left: 0;
+	margin-right: auto;
+	text-align: center;
+}
+
+.content-container {
+	margin-left: auto;
+	margin-right: 0;
+	text-align: left;
+}
+
+.left {
+	margin-left: 0;
+	margin-right: auto;
+	background-color: #cccccc;
+	border-color: #000000;
+	border-right: 1px;
+	border-left: 0px;
+	border-top: 0px;
+	border-bottom: 0px;
+}
+
+.left td {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
 .error0 {
 	color: red;
 	text-align: center;

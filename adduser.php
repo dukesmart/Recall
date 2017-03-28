@@ -30,6 +30,7 @@ function check_post() {
  * Sets variables, connects to database, and inserts contents into database.
  */
 function submit() {
+	global $template_footer;
 	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
 	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
 	check_vars();
@@ -49,6 +50,7 @@ function submit() {
 		} else {
 			echo '<p>Success! </p><p class="error1">Error: Could not add user to database.</p>';
 		}
+		echo $template_footer;
 	}
 }
 

@@ -87,6 +87,7 @@ HERE;
  * @param MySQL_Query_Result $query_result Results of the query containing the user's data row.
  */
 function display_submitted_page_contents($query_result) {
+	global $template_footer;
 	/* There are 0 results if there are no matching email/password combinations */
 	if($query_result->num_rows == 0) {
 		echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>';
@@ -96,16 +97,24 @@ function display_submitted_page_contents($query_result) {
 
 	/* User exists, continue */
 	$user = $query_result->fetch_assoc();
+	echo '<div class="content-container">';
 	echo '<p>Welcome, ' . $user['firstname'] . ' ' . $user['lastname'] . '.</p>';
 	if($user['privilege'] >= 2) {
-		echo '<p>Administrator: true</p>';
+		echo '<form name="search" action="search.php">' . PHP_EOL;
+		echo '<input type="text" name="searchquery" value="Search..." />' . PHP_EOL;
+		echo '<input type="submit" name="submit" value="Search" />' . PHP_EOL;
+		echo '</form>' . PHP_EOL;
 	}
-	echo '<table class="left">
-			<tr><td><a href="recall.php">Start a new recall</a></td></tr>
-			<tr><td><a href="adduser.php">Add a new user</a></td></tr>
-			<tr><td><a href="adddepartment.php">Add a new department</a></td></tr>
-			<tr><td><a href="addbillet.php">Add a new billet</a></td></tr>
-		</table>';
+	echo '</div>' . PHP_EOL;
+	echo '<div class="left-container">' . PHP_EOL . '<table class="left">' . PHP_EOL;
+	if($user['privilege'] >= 2) {
+		echo '<tr><td><a href="recall.php">Start a new recall</a></td></tr>
+		<tr><td><a href="adduser.php">Add a new user</a></td></tr>
+		<tr><td><a href="adddepartment.php">Add a new department</a></td></tr>
+		<tr><td><a href="addbillet.php">Add a new billet</a></td></tr>';
+		
+	}
+	echo '</table></div>' . PHP_EOL;
 	echo $template_footer;
 }
 ?>

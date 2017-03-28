@@ -1,19 +1,17 @@
 <?php
-/**
- * This is the page in which a user confirms his or her status.
- * @package confirm.php
+/*
+ * Page used to execute and display search results.
+ * @package search.php
  */
 @include 'config.php';
 @include 'template.php';
-
-global $sanitized_id;
 check_post();
 
 /**
  *  Check POST variables to see if are contents to submit.
  */
 function check_post() {
-	if(!isset($_GET['id'])) {
+	if(!isset($_GET['searchquery'])) {
 		display_unsubmitted_page_contents();
 		exit();
 	} else {
@@ -26,7 +24,7 @@ function check_post() {
  */
 function submit() {
 	check_vars();
-
+	
 	/* Connect to the MySQL server */
 	$mysql_connection = connect();
 	if(!$mysql_connection){
@@ -34,14 +32,10 @@ function submit() {
 	}
 	
 	/* Connected */
-	/* TODO Get userid, recallid based on sanitized_id */
-	//$query_result = mysqli_query($mysql_connection, "SELECT * FROM recipients WHERE recipientid")
+	/* TODO Search */
 	
-	/* TODO Insert confirmation into database */
-	//$query_result = mysqli_query($mysql_connection, "INSERT INTO confirmations");
-
 	display_submitted_page_contents();
-
+	
 	mysqli_close();
 }
 
@@ -49,7 +43,7 @@ function submit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	$sanitized_id = filter_var($_GET['id'], FILTER_SANITIZE_STRING);
+	$sanitized_searchquery = filter_var($_GET['searchquery'], FILTER_SANITIZE_STRING);
 }
 
 /**
@@ -58,6 +52,7 @@ function check_vars() {
 function display_submitted_page_contents() {
 	global $template_footer;
 	
+	echo '<p><a href="index.php">Return</a></p>' . PHP_EOL;
 	echo $template_footer;
 }
 
@@ -70,4 +65,5 @@ function display_unsubmitted_page_contents() {
 	echo $template_footer;
 }
 
+?>
 ?>

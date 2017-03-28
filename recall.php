@@ -82,7 +82,7 @@ function display_unsubmitted_page_contents() {
 		} else {
 			echo '<form name="recallusers" action="" method="POST">' . PHP_EOL;
 			echo '<table class="center">' . PHP_EOL;
-			echo '<tr>' . PHP_EOL . '<td></td>' . PHP_EOL . '<td>First Name</td>' . PHP_EOL . '<td>Last Name</td>' . PHP_EOL . '<td>Billet</td>' . PHP_EOL . '</tr>' . PHP_EOL;
+			echo '<tr>' . PHP_EOL . '<th></th>' . PHP_EOL . '<th>First Name</th>' . PHP_EOL . '<th>Last Name</th>' . PHP_EOL . '<th>Billet</th>' . PHP_EOL . '</tr>' . PHP_EOL;
 			/* Display each user as a checkable option in a table */
 			while($row = $userlist_query->fetch_assoc()) {
 				/* Query to get the billet name from the billet ID */

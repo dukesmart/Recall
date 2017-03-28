@@ -96,6 +96,9 @@ function display_submitted_page_contents($query_result) {
 	/* User exists, continue */
 	$user = $query_result->fetch_assoc();
 	echo '<p>Welcome, ' . $user['firstname'] . ' ' . $user['lastname'] . '.</p>';
+	if($user['privilege'] >= 2) {
+		echo '<p>Administrator: true</p>';
+	}
 	echo '<table class="left">
 			<tr><td><a href="recall.php">Start a new recall</a></td></tr>
 			<tr><td><a href="adduser.php">Add a new user</a></td></tr>

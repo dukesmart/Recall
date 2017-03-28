@@ -76,26 +76,38 @@ function display_unsubmitted_page_contents() {
 		exit;
 	} else {
 		/* Connected */
-		
-		echo '<table class="center">' . PHP_EOL;
-		echo '<tr>' . PHP_EOL . '<td></td>' . PHP_EOL . '<td>First Name</td>' . PHP_EOL . '<td>Last Name</td>' . PHP_EOL . '<td>Billet</td>' . PHP_EOL . '<td>Department</td>' . PHP_EOL . '</tr>';
-		$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid, departmentid FROM users");
-		while($row = mysql_fetch_rows($userlist_query)) {
-			echo '<tr>' . PHP_EOL;
-			echo '<td><input type="radio" name="users" value="' . $row['userid'] . '" /></td>' . PHP_EOL;
-			echo '<td>' . $row['firstname'] . '</td>' . PHP_EOL;
-			echo '<td>' . $row['lastname'] . '</td>' . PHP_EOL;
-			// TODO Get billet name from billetid
-			echo '<td>' . $row['billetid'] . '</td>' . PHP_EOL;
-			// TODO Get department name from departmentid
-			echo '<td>' . $row['departmentid'] . '</td>' . PHP_EOL;
-			echo '</tr>' . PHP_EOL;
+		$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid FROM users LIMIT 50;");
+		if(!$userlist_query) {
+			echo '<p class="error1">Failed to get user list from database.</p>' . PHP_EOL;
+		} else {
+			echo '<form name="recallusers" action="" method="POST">' . PHP_EOL;
+			echo '<table class="center">' . PHP_EOL;
+			echo '<tr>' . PHP_EOL . '<td></td>' . PHP_EOL . '<td>First Name</td>' . PHP_EOL . '<td>Last Name</td>' . PHP_EOL . '<td>Billet</td>' . PHP_EOL . '</tr>' . PHP_EOL;
+			/* Display each user as a checkable option in a table */
+			while($row = $userlist_query->fetch_assoc()) {
+				/* Query to get the billet name from the billet ID */
+				$row_billet_query = mysqli_query($mysql_connection, "SELECT name FROM billets WHERE billetid='" . $row['billetid'] . "';");
+				echo '<tr>' . PHP_EOL;
+				echo '<td><input type="checkbox" name="users" value="' . $row['userid'] . '" /></td>' . PHP_EOL;
+				echo '<td>' . $row['firstname'] . '</td>' . PHP_EOL;
+				echo '<td>' . $row['lastname'] . '</td>' . PHP_EOL;
+				// TODO Get billet name from billetid
+				if(!$row_billet_query) {
+					echo '<td><p class="error1">Failed to get billet from database.</p></td>' . PHP_EOL;
+				} else {
+					$row_billet = $row_billet_query->fetch_assoc();
+					echo '<td>' . $row_billet['name'] . '</td>' . PHP_EOL;
+				}
+				// TODO Get department name from departmentid
+				//echo '<td>' . $row['departmentid'] . '</td>' . PHP_EOL;
+				echo '</tr>' . PHP_EOL;
+			}
+			echo '<tr><td colspan="3"><input type="submit" value="Start a Recall" /></td></tr>';
+			echo '</table>' . PHP_EOL . '</form>' . PHP_EOL;
 		}
-		echo '</table>' . PHP_EOL;
 		
 		mysqli_close();
 	}
-	echo '<input type="submit" value="Start a Recall" />' . PHP_EOL . '</form>' . PHP_EOL;
 	echo '<p><a href="index.php">Return</a></p>';
 	echo $template_footer;
 }

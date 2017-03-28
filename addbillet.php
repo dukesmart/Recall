@@ -27,6 +27,7 @@ function check_post() {
  * Sets variables, connects to database, and inserts contents into database.
  */
 function submit() {
+	global $mysql_error_connect, $template_footer;
 	global $mysql_connection, $billet_name, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
 	check_vars();
 	
@@ -34,7 +35,7 @@ function submit() {
 	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 	if (!$mysql_connection) {
 		/* Couldn't connect */
-		echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
+		echo $mysql_error_connect;
 		echo $template_footer;
 		exit();
 	} else {

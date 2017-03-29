@@ -91,7 +91,7 @@ function display_submitted_page_contents($query_result) {
 	global $template_footer;
 	/* There are 0 results if there are no matching email/password combinations */
 	if($query_result->num_rows == 0) {
-		echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>';
+		echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>' . PHP_EOL;
 		echo $template_footer;
 		exit();
 	}

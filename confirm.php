@@ -25,25 +25,30 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
+	global $mysql_error_connect, $template_footer;
 	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	check_vars();
 
 	/* Connect to the MySQL server */
 	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if(!$mysql_connection){
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect;
+		echo $template_footer;
 		exit();
+	} else {
+		
+		/* Connected */
+		/* TODO Get userid, recallid based on sanitized_id */
+		//$query_result = mysqli_query($mysql_connection, "SELECT * FROM recipients WHERE recipientid")
+	
+		/* TODO Insert confirmation into database */
+		//$query_result = mysqli_query($mysql_connection, "INSERT INTO confirmations");
+
+		display_submitted_page_contents();
+
+		mysqli_close();
 	}
-	
-	/* Connected */
-	/* TODO Get userid, recallid based on sanitized_id */
-	//$query_result = mysqli_query($mysql_connection, "SELECT * FROM recipients WHERE recipientid")
-	
-	/* TODO Insert confirmation into database */
-	//$query_result = mysqli_query($mysql_connection, "INSERT INTO confirmations");
-
-	display_submitted_page_contents();
-
-	mysqli_close();
 }
 
 /**

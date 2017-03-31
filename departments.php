@@ -80,6 +80,9 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
+	global $template_footer, $nav_sidebar;
+	
+	echo $nav_sidebar;
 	echo '<form name="adddepartmentform" action="" method="POST">
 		<table class="center">
 				<tr>

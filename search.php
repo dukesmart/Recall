@@ -55,9 +55,9 @@ function check_vars() {
  */
 function display_submitted_page_contents() {
 	global $template_footer, $nav_sidebar, $template_footer;
+	
 	echo $nav_sidebar;
 	
-	echo '<p><a href="index.php">Return</a></p>' . PHP_EOL;
 	echo $template_footer;
 }
 

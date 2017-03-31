@@ -128,6 +128,8 @@ function display_unsubmitted_page_contents() {
 	global $mysql_error_connect;
 	global $template_footer, $nav_sidebar, $template_footer;
 	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
+	
+	echo $nav_sidebar;
 	echo '<form name="recall" action="" method="POST">' . PHP_EOL;
 	/* Connect to the MySQL server */
 	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);

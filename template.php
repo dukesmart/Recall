@@ -33,10 +33,10 @@ $nav_sidebar =
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item active">
-					<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="index.php">Home <span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#">Settings</a>
+					<a class="nav-link" href="settings.php">Settings</a>
 				</li>
 			</ul>
 			<form class="form-inline mt-2 mt-md-0" action="search.php" method="POST">

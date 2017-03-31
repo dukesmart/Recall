@@ -19,7 +19,6 @@ function check_post() {
 	global $_POST;
 	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['password1']) || !isset($_POST['password2'])) {
 		display_unsubmitted_page_contents();
-		echo $template_footer;
 		exit();
 	} else {
 		submit();
@@ -77,6 +76,8 @@ function check_vars() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
+	global $template_footer, $nav_sidebar;
+	echo $nav_sidebar;
 	echo '<form name="adduserform" action="adduser.php" method="POST">
 		<table class="center">
 				<tr>
@@ -130,5 +131,6 @@ function display_unsubmitted_page_contents() {
 		</table>
 </form>';
 	echo '<p><a href="index.php">Return</a></p>';
+	echo $template_footer;
 }
 ?>

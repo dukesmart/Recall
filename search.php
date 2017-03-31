@@ -54,7 +54,8 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer;
+	global $template_footer, $nav_sidebar, $template_footer;
+	echo $nav_sidebar;
 	
 	echo '<p><a href="index.php">Return</a></p>' . PHP_EOL;
 	echo $template_footer;
@@ -64,8 +65,10 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_header, $template_footer;
+	global $template_footer, $nav_sidebar, $template_footer;
+	
 	echo $template_header;
+	echo $nav_sidebar;
 	echo '<p>You must be participating in a recall to submit a confirmation.</p>';
 	echo $template_footer;
 }

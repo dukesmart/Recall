@@ -116,7 +116,7 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_header;
+	global $template_footer, $nav_sidebar, $template_footer;
 	echo '<p><a href="index.php">Return</a></p>';
 	echo $template_footer;
 }
@@ -125,7 +125,8 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $mysql_error_connect, $template_footer;
+	global $mysql_error_connect;
+	global $template_footer, $nav_sidebar, $template_footer;
 	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	echo '<form name="recall" action="" method="POST">' . PHP_EOL;
 	/* Connect to the MySQL server */

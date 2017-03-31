@@ -64,7 +64,7 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer;
+	global $template_footer, $nav_sidebar;
 	echo '<div class="left-container">' . PHP_EOL . '<table class="left">
 			<tr><td><a href="addbillet.php">Add another billet</a></td></tr>
 			<tr><td><a href="index.php">Return</a></td></tr>
@@ -76,6 +76,7 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
+	global $template_footer, $nav_sidebar;
 	echo '<form name="addbilletform" action="addbillet.php" method="POST">
 		<table class="center">
 				<tr>

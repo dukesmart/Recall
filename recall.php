@@ -161,7 +161,8 @@ function display_unsubmitted_page_contents() {
 	} else {
 		/* Connected */
 		echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
-		$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid FROM users LIMIT 50;");
+		echo '<h1>Recalls</h1>' . PHP_EOL;
+		$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid FROM users ORDER BY lastname LIMIT 50;");
 		if(!$userlist_query) {
 			/* Query success */
 			echo '<div class="alert alert-danger" role="alert">Failed to get user list from database.</div>' . PHP_EOL;

@@ -132,8 +132,7 @@ function display_unsubmitted_page_contents() {
 					<select name="billetid">
 						<option value="0">Default</option>' . PHP_EOL;
 	display_billet_list();
-	echo '
-					</select>
+	echo '					</select>
 				</td>
 				</tr>
 				<tr>
@@ -159,20 +158,21 @@ function display_unsubmitted_page_contents() {
  */
 function display_billet_list() {
 	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
 	/* Connect to the MySQL server */
 	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 	if (!$mysql_connection) {
 		/* Couldn't connect */
-		echo $mysql_error_connect;
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
 		echo $template_footer;
 		exit();
 	} else {
 		/* Connected */
-		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets;");
+		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
 		if($query_billetlist) {
-			while($row = $userlist_query->fetch_assoc()) {
+			while($row = $query_billetlist->fetch_assoc()) {
 				echo '						';
-				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>'; 
+				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
 			}
 		} else {
 			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';

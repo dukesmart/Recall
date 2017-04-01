@@ -140,6 +140,7 @@ function display_unsubmitted_page_contents() {
 		exit;
 	} else {
 		/* Connected */
+		echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 		$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid FROM users LIMIT 50;");
 		if(!$userlist_query) {
 			/* Query success */
@@ -189,7 +190,7 @@ function display_unsubmitted_page_contents() {
 		
 		mysqli_close();
 	}
-	echo '<p><a href="index.php">Return</a></p>' . PHP_EOL;
+	echo '</main>' . PHP_EOL;
 	echo $template_footer;
 }
 ?>

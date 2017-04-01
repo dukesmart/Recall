@@ -9,7 +9,6 @@
 
 echo $template_header;
 check_session();
-check_post();
 
 function check_session() {
 	global $_SESSION;
@@ -17,7 +16,7 @@ function check_session() {
 	if(isset($_SESSION['email'])) {
 		
 	} else {
-		
+		check_post();
 	}
 }
 
@@ -127,6 +126,12 @@ function display_submitted_page_contents($user_query) {
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Dashboard</h1>' . PHP_EOL;
+	/* if(recall) {
+	 * 	echo '<p> There is not a recall in progress. </p>';
+	 * } else {
+	 * 	
+	 * }
+	 */
 	echo '</main>' . PHP_EOL;
 	
 	/*echo '<div class="content-container">';

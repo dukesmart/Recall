@@ -77,6 +77,9 @@ function display_submitted_page_contents() {
  */
 function display_unsubmitted_page_contents() {
 	global $template_footer, $nav_sidebar;
+	
+	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<form name="addbilletform" action="addbillet.php" method="POST">
 		<table class="center">
 				<tr>
@@ -100,6 +103,6 @@ function display_unsubmitted_page_contents() {
 				</tr>
 		</table>
 </form>';
-	echo '<p><a href="index.php">Return</a></p>';
+	echo '</main>' . PHP_EOL;
 }
 ?>

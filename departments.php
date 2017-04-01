@@ -83,6 +83,7 @@ function display_unsubmitted_page_contents() {
 	global $template_footer, $nav_sidebar;
 	
 	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<form name="adddepartmentform" action="" method="POST">
 		<table class="center">
 				<tr>
@@ -102,7 +103,7 @@ function display_unsubmitted_page_contents() {
 				<td><input type="submit" name="Submit" /></td>
 				</tr>
 		</table>
-</form>';
-	echo '<p><a href="index.php">Return</a></p>';
+</form>' . PHP_EOL;
+	echo '</main>' . PHP_EOL;
 }
 ?>

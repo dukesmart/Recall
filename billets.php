@@ -97,6 +97,7 @@ function display_unsubmitted_page_contents() {
 	
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	echo '<h1>Billets</h1>' . PHP_EOL;
 	echo '<form name="addbilletform" action="addbillet.php" method="POST">
 		<table class="center">
 				<tr>

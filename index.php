@@ -32,7 +32,7 @@ function check_session() {
 			$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $_SESSION['email'] . "';");
 			/* There are 0 results if there are no matching email/password combinations */
 			if($user_query->num_rows == 0) {
-				echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>' . PHP_EOL;
+				echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
 				echo $template_footer;
 				exit();
 			} else {
@@ -81,9 +81,8 @@ function submit() {
 		$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "' AND password='" . $hashed_password . "';");
 		/* There are 0 results if there are no matching email/password combinations */
 		if($user_query->num_rows == 0) {
-			echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>' . PHP_EOL;
-			echo $template_footer;
-			exit();
+			echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
+			display_unsubmitted_page_contents();
 		} else {
 			$_SESSION['email'] = $email_address;
 			display_submitted_page_contents($user_query);

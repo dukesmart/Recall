@@ -59,9 +59,9 @@ function submit() {
 		/* Connected */
 		$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name) VALUES ('" . $billet_name . "');");
 		if($query_result) {
-			echo '<p>Success: ' . $billet_name . " added.</p>";
+			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . " added.</div>";
 		} else {
-			echo '<p>Success! </p><p class="error1">Error: Could not add department to database.</p>';
+			echo '<div class="alert alert-danger" role="alert">Error: Could not add department to database.</p>';
 		}
 		display_submitted_page_contents();
 	

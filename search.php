@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Page used to execute and display search results.
  * @package search.php
  */
@@ -14,10 +14,8 @@ check_session();
  */
 function check_session() {
 	global $_SESSION;
-	global $template_header;
 	
 	if(isset($_SESSION['email'])) {
-		echo $template_header;
 		check_post();
 	} else {
 		header("location:index.php");
@@ -71,7 +69,9 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer, $nav_sidebar, $template_footer;
+	global $template_footer, $nav_sidebar, $template_footer,$template_header;
+	
+	echo $template_header;
 	
 	echo $nav_sidebar;
 	
@@ -86,7 +86,6 @@ function display_unsubmitted_page_contents() {
 	
 	echo $template_header;
 	echo $nav_sidebar;
-	echo '<p>You must be participating in a recall to submit a confirmation.</p>';
 	echo $template_footer;
 }
 

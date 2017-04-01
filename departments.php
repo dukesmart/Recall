@@ -60,9 +60,9 @@ function submit() {
 		/* Connected */
 		$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES ('" . $department_name . "');");
 		if($query_result) {
-			echo '<p>Success: ' . $department_name . ' added.</p>';
+			echo '<div class="alert alert-success" role="alert"> Success: ' . $department_name . ' added.</div>';
 		} else {
-			echo '<p>Success! </p><p class="error1">Error: Could not add department to database.</p>';
+			echo '<div class="alert alert-danger" role="alert">Error: Could not add department to database.</div>';
 		}
 		display_submitted_page_contents();
 		
@@ -85,10 +85,8 @@ function check_vars() {
  */
 function display_submitted_page_contents() {
 	global $template_footer, $nav_sidebar;
-	echo '<div class="left-container">' . PHP_EOL . '<table class="left">
-			<tr><td><a href="adddepartment.php">Add another department</a></td></tr>
-			<tr><td><a href="index.php">Return</a></td></tr>
-		</table>' . PHP_EOL . '</div>' . PHP_EOL;
+	
+	echo $nav_sidebar;
 	echo $template_footer;
 }
 

@@ -64,7 +64,7 @@ function submit() {
 		$recall_query = mysqli_query($mysql_connection, "INSERT INTO recalls (datetime, message) VALUES ('" . $recall_date . "', '" . $recall_message . "');");
 		if(!$recall_query) {
 			/* Query failed */
-			echo '<p class="error1">Failed to initiate recall. <a href="recall.php">Retry</a></p>';
+			echo '<div class="alert alert-danger" role="alert">Error: Failed to initiate recall. </div>';
 			echo $template_footer;
 			exit();
 		} else {
@@ -72,7 +72,7 @@ function submit() {
 			$recall_result = mysqli_query($mysql_connection, "SELECT * FROM recalls WHERE datetime='" . $date . "';");
 			if(!$recall_query) {
 				/* Query failed */
-				echo '<p class="error1">Failed to initiate recall. <a href="recall.php">Retry</a></p>';
+				echo '<div class="alert alert-danger" role="alert">Error: Failed to initiate recall. </div>';
 				echo $template_footer;
 				exit();
 			} else {
@@ -82,7 +82,7 @@ function submit() {
 					$recipient_query = mysqli_query($mysql_connection, "INSERT INTO recipients (userid, recallid) VALUES ('" . $recipient . "', '" . $recall_id . "');");
 					if(!$recipient_query) {
 						/* Query failed */
-						echo '<p class="error1">Failed to add recipient. <a href="recall.php">Retry</a></p>';
+						echo '<div class="alert alert-danger" role="alert">Error: Failed to add recipient. </div>';
 						echo $template_footer;
 						exit();
 					} else {
@@ -95,6 +95,8 @@ function submit() {
 						}
 					}
 				}
+				
+				display_submitted_page_contents();
 			}
 		}
 		
@@ -121,7 +123,7 @@ function check_vars() {
 	}
 	
 	if(($send_email == false) && ($send_text == false)) {
-		echo '<p class="error1">At least one contact method must be selected (Email, text message). <a href="recall.php">Retry</a></p>';
+		echo '<div class="alert alert-danger" role="alert">Error: At least one contact method must be selected (Email, text message). </div>';
 		echo $template_footer;
 		exit;
 	}
@@ -132,7 +134,10 @@ function check_vars() {
  */
 function display_submitted_page_contents() {
 	global $template_footer, $nav_sidebar, $template_footer;
-	echo '<p><a href="index.php">Return</a></p>';
+	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	echo '<div class="alert alert-success" role="alert">Recall initiated.</div>' . PHP_EOL;
+	echo '</main>' . PHP_EOL;
 	echo $template_footer;
 }
 
@@ -159,7 +164,7 @@ function display_unsubmitted_page_contents() {
 		$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid FROM users LIMIT 50;");
 		if(!$userlist_query) {
 			/* Query success */
-			echo '<p class="error1">Failed to get user list from database.</p>' . PHP_EOL;
+			echo '<div class="alert alert-danger" role="alert">Failed to get user list from database.</div>' . PHP_EOL;
 		} else {
 			/* Query Failure */
 			echo '<form name="recallusers" action="" method="POST">' . PHP_EOL;

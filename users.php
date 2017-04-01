@@ -57,9 +57,9 @@ function submit() {
 		/* Connected */
 		$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "');");
 		if($query_result) {
-			echo '<p>Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</p>';
+			echo '<div class="alert alert-success" role="alert">Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</div>';
 		} else {
-			echo '<p>Success! </p><p class="error1">Error: Could not add user to database.</p>';
+			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
 		}
 		echo $template_footer;
 	}
@@ -80,7 +80,7 @@ function check_vars() {
 	if($_POST['password1'] == $_POST['password2']) {
 		$user_hashed_password = filter_var(hash('sha256', $_POST['password1']), FILTER_SANITIZE_STRING);
 	} else {
-		echo '<p class="error0">Passwords do not match. <a href="adduser.php">Retry</a></p>';
+		echo '<div class="alert alert-danger" role="alert">Passwords do not match. </div>';
 	}
 }
 

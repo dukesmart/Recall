@@ -81,6 +81,7 @@ function check_vars() {
 	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
 	$user_phone = filter_var(strtolower($_POST['phone']), FILTER_SANITIZE_STRING);
 	$user_privilege = filter_var($_POST['privilege'], FILTER_SANITIZE_NUMBER_INT);
+	$user_billetid = filter_var($_POST['billetid'], FILTER_SANITIZE_NUMBER_INT);
 	
 	if($_POST['password1'] == $_POST['password2']) {
 		$user_hashed_password = filter_var(hash('sha256', $_POST['password1']), FILTER_SANITIZE_STRING);
@@ -96,11 +97,10 @@ function display_unsubmitted_page_contents() {
 	global $template_header, $template_footer, $nav_sidebar;
 	
 	echo '<h1>Users</h1>' . PHP_EOL;
-	echo '<form name="adduserform" action="adduser.php" method="POST">
-		<table class="center">
-				<tr>
-				<td colspan="2">Add a new user</td>
-				</tr>
+	echo '<h4>Add a new user</h4>';
+	echo '<form name="adduserform" action="users.php" method="POST">
+		<div class="table-responsive">
+		<table class="table">
 				<tr>
 				<td>First Name:</td>
 				<td><input type="text" name="firstname" /></td>
@@ -117,15 +117,16 @@ function display_unsubmitted_page_contents() {
 				<td>Phone Number:</td>
 				<td><input type="text" name="phone" /></td>
 				</tr>
+				
 				<tr>
-				<td>Privilege Level:</td>
+				<td>Department:</td>
 				<td>
-					<select name="privilege">
-						<option value="0">Default</option>
-						<option value="1">Student Administrator</option>
-						<option value="2">Staff Administrator</option>
-					</select>
+					<select name="departmentid">
+						<option value="0">Default</option>' . PHP_EOL;
+	display_department_list();
+	echo '					</select>
 				</td>
+				</tr>
 				<tr>
 				<td>Billet:</td>
 				<td>
@@ -135,6 +136,15 @@ function display_unsubmitted_page_contents() {
 	echo '					</select>
 				</td>
 				</tr>
+				<tr>
+				<td>Privilege Level:</td>
+				<td>
+					<select name="privilege">
+						<option value="0">Default</option>
+						<option value="1">Student Administrator</option>
+						<option value="2">Staff Administrator</option>
+					</select>
+				</td>
 				<tr>
 				<td>Password:</td>
 				<td><input type="password" name="password1" /></td>
@@ -148,6 +158,7 @@ function display_unsubmitted_page_contents() {
 				<td><input type="submit" name="Submit" /></td>
 				</tr>
 		</table>
+		</div>
 </form>' . PHP_EOL;
 	echo '</main>' . PHP_EOL;
 	echo $template_footer;
@@ -175,7 +186,34 @@ function display_billet_list() {
 				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
 			}
 		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
+		}
+	}
+}
+
+/**
+ * Generates department dropdown list.
+ */
+function display_department_list() {
+	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_deptlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
+		if($query_deptlist) {
+			while($row = $query_deptlist->fetch_assoc()) {
+				echo '						';
+				echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain department list.</div>';
 		}
 	}
 }

@@ -1,9 +1,9 @@
 <?php
-/*
+/**
  * This file is used as a template and structure for designing other pages. Template: https://v4-alpha.getbootstrap.com/examples/dashboard/
  * @package template.php
  */
- $template_header = 
+$template_header = 
 '<!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -23,13 +23,13 @@
 	</head>
 	<body>' . PHP_EOL;
 
-$nav_sidebar = 
-'	<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+$nav_sidebar =
+ '	<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
 		<button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<a class="navbar-brand" href="#">Recall</a>
-	
+ 		
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item active">
@@ -45,7 +45,7 @@ $nav_sidebar =
 			</form>
 		</div>
 	</nav>
-
+ 		
 	<div class="container-fluid">
 		<div class="row">
 			<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
@@ -67,7 +67,7 @@ $nav_sidebar =
 					</li>
 				</ul>
 			</nav>
-
+ 		
 		</div>
 	</div>
 ' . PHP_EOL;

@@ -57,7 +57,7 @@ function submit() {
 		exit();
 	} else {
 		/* Connected */
-		$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name) VALUES ('" . $billet_name . "');");
+		$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, department) VALUES ('" . $billet_name . "', '" . $billet_department . "');");
 		if($query_result) {
 			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . " added.</div>";
 		} else {
@@ -73,8 +73,9 @@ function submit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	global $billet_name;
+	global $billet_name, $billet_department;
 	$billet_name = filter_var($_POST['billetname'], FILTER_SANITIZE_STRING);
+	$billet_department = filter_VAR($_POST['department'], FILTER_SANITIZE_NUMBER_INT);
 }
 
 /**
@@ -82,10 +83,7 @@ function check_vars() {
  */
 function display_submitted_page_contents() {
 	global $template_footer, $nav_sidebar;
-	echo '<div class="left-container">' . PHP_EOL . '<table class="left">
-			<tr><td><a href="addbillet.php">Add another billet</a></td></tr>
-			<tr><td><a href="index.php">Return</a></td></tr>
-		</table>' . PHP_EOL . '</div>' . PHP_EOL;
+	
 	echo $template_footer;
 }
 
@@ -98,8 +96,8 @@ function display_unsubmitted_page_contents() {
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Billets</h1>' . PHP_EOL;
-	echo '<form name="addbilletform" action="addbillet.php" method="POST">
-		<table class="center">
+	echo '<form name="addbilletform" action="billets.php" method="POST">
+		<table class="table">
 				<tr>
 				<td colspan="2">Add a new Billet</td>
 				</tr>
@@ -110,8 +108,9 @@ function display_unsubmitted_page_contents() {
 				<tr>
 				<td>Department:</td>
 				<td>
-					<select name="department">
-						' . /* TODO: Dynamically generate department list*/ '
+					<select name="department">' . PHP_EOL;
+	display_department_list();
+					echo '
 					</select>
 				</td>
 				</tr>
@@ -122,5 +121,32 @@ function display_unsubmitted_page_contents() {
 		</table>
 </form>';
 	echo '</main>' . PHP_EOL;
+}
+
+/**
+ * Generates department dropdown list.
+ */
+function display_department_list() {
+	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_deptlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
+		if($query_deptlist) {
+			while($row = $query_deptlist->fetch_assoc()) {
+				echo '						';
+				echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
+		}
+	}
 }
 ?>

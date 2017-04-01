@@ -5,15 +5,14 @@
  */
 
 @include 'config.php';
-@include 'template.php';
 
 /**
  * Connect to the MySQL server
  */
-function connect() {
-	global $mysql_host, $mysql_username, $mysql_password, $mysql_database;
+function mysql_setup() {
+	global $mysql_error_connect, $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	
-	$connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 	if (!$connection) {
 		/* Couldn't connect */
 		echo '<p class="error0">Error: Unable to connect to MySQL.</p>\n';
@@ -22,5 +21,4 @@ function connect() {
 	
 	return $connection;
 }
-
 ?>

@@ -7,6 +7,7 @@
 @include 'config.php';
 @include 'template.php';
 
+session_start();
 check_session();
 
 /**
@@ -14,10 +15,8 @@ check_session();
  */
 function check_session() {
 	global $_SESSION;
-	global $template_header;
 	
 	if(isset($_SESSION['email'])) {
-		echo $template_header;
 		check_post();
 	} else {
 		header("location:index.php");
@@ -28,7 +27,12 @@ function check_session() {
  * Check POST variables to see if are contents to submit.
  */
 function check_post() {
-	global $_POST;
+	global $_POST, $nav_sidebar, $template_header;
+	
+	echo $template_header;
+	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	
 	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['password1']) || !isset($_POST['password2'])) {
 		display_unsubmitted_page_contents();
 		exit();
@@ -61,6 +65,7 @@ function submit() {
 		} else {
 			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
 		}
+		display_unsubmitted_page_contents();
 		echo $template_footer;
 	}
 }
@@ -88,9 +93,9 @@ function check_vars() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_footer, $nav_sidebar;
-	echo $nav_sidebar;
-	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	global $template_header, $template_footer, $nav_sidebar;
+	
+	echo '<h1>Users</h1>' . PHP_EOL;
 	echo '<form name="adduserform" action="adduser.php" method="POST">
 		<table class="center">
 				<tr>
@@ -125,7 +130,9 @@ function display_unsubmitted_page_contents() {
 				<td>Billet:</td>
 				<td>
 					<select name="billetid">
-						' . /* TODO: Dynamically generate billet list*/ '
+						<option value="0">Default</option>' . PHP_EOL;
+	display_billet_list();
+	echo '
 					</select>
 				</td>
 				</tr>
@@ -142,8 +149,34 @@ function display_unsubmitted_page_contents() {
 				<td><input type="submit" name="Submit" /></td>
 				</tr>
 		</table>
-</form>';
+</form>' . PHP_EOL;
 	echo '</main>' . PHP_EOL;
 	echo $template_footer;
+}
+
+/**
+ * Generates billet dropdown list.
+ */
+function display_billet_list() {
+	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets;");
+		if($query_billetlist) {
+			while($row = $userlist_query->fetch_assoc()) {
+				echo '						';
+				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>'; 
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
+		}
+	}
 }
 ?>

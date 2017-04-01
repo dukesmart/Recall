@@ -12,6 +12,7 @@ check_session();
  */
 function check_session() {
 	global $_SESSION;
+	global $template_header;
 	
 	if(isset($_SESSION['email'])) {
 		echo $template_header;

@@ -14,6 +14,7 @@ check_session();
  */
 function check_session() {
 	global $_SESSION;
+	global $mysql_error_connect, $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
 	
 	if(isset($_SESSION['email'])) {
 		/* Connect to the MySQL server */

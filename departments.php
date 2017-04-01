@@ -14,6 +14,7 @@ check_session();
  */
 function check_session() {
 	global $_SESSION;
+	global $template_header;
 	
 	if(isset($_SESSION['email'])) {
 		echo $template_header;
@@ -28,6 +29,8 @@ function check_session() {
  */
 function check_post() {
 	global $_POST;
+	global $template_footer;
+
 	if(!isset($_POST['departmentname']) /*|| !isset($_POST['rootbillet'])*/) {
 		display_unsubmitted_page_contents();
 		echo $template_footer;

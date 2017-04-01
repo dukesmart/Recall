@@ -7,10 +7,21 @@
 @include 'config.php';
 @include 'template.php';
 
-global $user_firstname, $user_lastname, $user_email, $user_phone, $user_hashed_password, $user_privilege; 
-echo $template_header;
-echo $_POST['firstname'] . ' ' . $_POST['lastname'] . ' ' . $_POST['email'] . ' ' . $_POST['password1'] . ' ' . $_POST['password2'];
-check_post();
+check_session();
+
+/**
+ * Check to see if a user has previously logged in.
+ */
+function check_session() {
+	global $_SESSION;
+	
+	if(isset($_SESSION['email'])) {
+		echo $template_header;
+		check_post();
+	} else {
+		header("location:index.php");
+	}
+}
 
 /**
  * Check POST variables to see if are contents to submit.

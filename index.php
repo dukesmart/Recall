@@ -7,15 +7,38 @@
 @include 'config.php';
 @include 'template.php';
 
-echo $template_header;
 check_session();
 
+/**
+ * Check to see if a user has previously logged in.
+ */
 function check_session() {
 	global $_SESSION;
 	
 	if(isset($_SESSION['email'])) {
-		
+		/* Connect to the MySQL server */
+		$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+		if (!$mysql_connection) {
+			/* Couldn't connect */
+			echo $mysql_error_connect;
+			echo $template_footer;
+			exit;
+		} else {
+			/* Connected */
+			$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "';");
+			/* There are 0 results if there are no matching email/password combinations */
+			if($user_query->num_rows == 0) {
+				echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>' . PHP_EOL;
+				echo $template_footer;
+				exit();
+			} else {
+				display_submitted_page_contents($user_query);
+			}
+			
+			mysqli_close($mysql_connection);
+		}
 	} else {
+		echo $template_header;
 		check_post();
 	}
 }
@@ -37,8 +60,9 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
-	global $mysql_error_connect, $template_footer;
-	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $email_address, $hashed_password, $query_result;
+	global $template_footer;
+	global $mysql_error_connect, $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $email_address, $hashed_password;
 	check_vars();
 	
 	/* Connect to the MySQL server */
@@ -57,6 +81,7 @@ function submit() {
 			echo $template_footer;
 			exit();
 		} else {
+			$_SESSION['email'] = $email_address;
 			display_submitted_page_contents($user_query);
 		}
 		

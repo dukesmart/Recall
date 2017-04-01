@@ -56,7 +56,6 @@ function submit() {
 		exit;
 	} else {
 		/* Connected */
-		display_submitted_page_contents();
 		
 		$recall_date = date("Y-m-d H:i:s");
 		// TODO Add initiator ID
@@ -95,7 +94,6 @@ function submit() {
 						}
 					}
 				}
-				
 				display_submitted_page_contents();
 			}
 		}

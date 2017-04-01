@@ -7,6 +7,7 @@
 @include 'config.php';
 @include 'template.php';
 
+session_start();
 check_session();
 
 /**

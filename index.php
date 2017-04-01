@@ -15,8 +15,11 @@ check_session();
 function check_session() {
 	global $_SESSION;
 	global $mysql_error_connect, $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $template_header;
 	
+	session_start();
 	if(isset($_SESSION['email'])) {
+		echo $template_header;
 		/* Connect to the MySQL server */
 		$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
 		if (!$mysql_connection) {
@@ -26,7 +29,7 @@ function check_session() {
 			exit;
 		} else {
 			/* Connected */
-			$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "';");
+			$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $_SESSION['email'] . "';");
 			/* There are 0 results if there are no matching email/password combinations */
 			if($user_query->num_rows == 0) {
 				echo '<p class="error0">Error: Incorrect email address or password. <a href="index.php">Retry</a></p>' . PHP_EOL;

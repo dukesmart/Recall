@@ -7,13 +7,15 @@
 @include 'config.php';
 @include 'template.php';
 
+check_session();
+
 /**
  * Check to see if a user has previously logged in.
  */
 function check_session() {
-	global $_SESSION;
 	global $template_header;
 	
+	session_start();
 	if(isset($_SESSION['email'])) {
 		echo $template_header;
 		check_post();

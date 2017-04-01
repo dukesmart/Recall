@@ -99,26 +99,104 @@ function display_unsubmitted_page_contents() {
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Departments</h1>' . PHP_EOL;
+	echo '<h4>Add a new department</h4>' . PHP_EOL;
 	echo '<form name="adddepartmentform" action="departments.php" method="POST">
-		<table class="table">
-				<tr>
-				<td colspan="2">Add a new Department</td>
-				</tr>
-				<tr>
-				<td>Department Name:</td>
-				<td><input type="text" name="departmentname" /></td>
-				</tr>
-				<tr>
-				<td>Root Billet:</td>
-				<td>
-				</td>
-				</tr>
-				<tr>
-				<td></td>
-				<td><input type="submit" name="Submit" /></td>
-				</tr>
-		</table>
-</form>' . PHP_EOL;
+		<div class="table-responsive">
+			<table class="table">
+					<tr>
+					<td>Department Name:</td>
+					<td><input type="text" name="departmentname" /></td>
+					</tr>
+					<tr>
+					<td>Root Billet:</td>
+					<td>
+						<select name="billetid">
+							<option value="0">Default</option>' . PHP_EOL;
+	display_dropdown_billet_list();
+	echo '						</select>
+					</td>
+					</tr>
+					<tr>
+					<td></td>
+					<td><input type="submit" name="Submit" /></td>
+					</tr>
+			</table>
+		</div>
+	</form>' . PHP_EOL;
+	echo '<h4>All departments</h4>' . PHP_EOL;
+	echo '<div class="table-responsive">' . PHP_EOL;
+	echo '<table class="table table-striped">' . PHP_EOL;
+	echo '<thead>' . PHP_EOL;
+	echo 
+'	<tr>
+		<th>Department Name</th>
+		<th>Root Billet</th>
+	</tr>' . PHP_EOL;
+	echo '</thead>' . PHP_EOL . '<tbody>' . PHP_EOL;
+	display_department_list();
+	echo '</tbody>' . PHP_EOL;
+	echo '</table>' . PHP_EOL . '</div>' . PHP_EOL;
 	echo '</main>' . PHP_EOL;
+}
+
+/**
+ * Generates billet dropdown list.
+ */
+function display_dropdown_billet_list() {
+	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
+		if($query_billetlist) {
+			while($row = $query_billetlist->fetch_assoc()) {
+				echo '							';
+				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>' . PHP_EOL;
+		}
+	}
+}
+
+/**
+ * Generates department list.
+ */
+function display_department_list() {
+	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_departmentlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
+		if($query_departmentlist) {
+			while($row = $query_departmentlist->fetch_assoc()) {
+				$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['rootbilletid'] . "';");
+				echo '	';
+				echo '<tr><td>' . $row['name'] . '</td>';
+				if($query_billet && ($query_billet->num_rows == 1)) {
+					$billet = $query_billet->fetch_assoc();
+					echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;
+				} else {
+					echo '<td><div class="alert alert-warning" role="alert">Could not obtain billet name.</div></td>';
+				}
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
+		}
+	}
 }
 ?>

@@ -123,7 +123,7 @@ function display_unsubmitted_page_contents() {
 				<td>
 					<select name="departmentid">
 						<option value="0">Default</option>' . PHP_EOL;
-	display_department_list();
+	display_dropdown_department_list();
 	echo '					</select>
 				</td>
 				</tr>
@@ -132,7 +132,7 @@ function display_unsubmitted_page_contents() {
 				<td>
 					<select name="billetid">
 						<option value="0">Default</option>' . PHP_EOL;
-	display_billet_list();
+	display_dropdown_billet_list();
 	echo '					</select>
 				</td>
 				</tr>
@@ -160,6 +160,24 @@ function display_unsubmitted_page_contents() {
 		</table>
 		</div>
 </form>' . PHP_EOL;
+	
+	echo '<h4>All users</h4>' . PHP_EOL;
+	echo '<div class="table-responsive">' . PHP_EOL;
+	echo '<table class="table table-striped">';
+	echo '<thead>' . PHP_EOL;
+	echo
+	'	<tr>
+		<th>Last Name</th>
+		<th>First Name</th>
+		<th>Email Address</th>
+		<th>Phone Number</th>
+		<th>Billet</th>
+	</tr>' . PHP_EOL;
+	echo '</thead>' . PHP_EOL . '<tbody>' . PHP_EOL;
+	display_user_list();
+	echo '</tbody>' . PHP_EOL;
+	echo '</table>' . PHP_EOL . '</div>' . PHP_EOL;
+	echo '</main>' . PHP_EOL;
 	echo '</main>' . PHP_EOL;
 	echo $template_footer;
 }
@@ -167,7 +185,7 @@ function display_unsubmitted_page_contents() {
 /**
  * Generates billet dropdown list.
  */
-function display_billet_list() {
+function display_dropdown_billet_list() {
 	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
 	
 	/* Connect to the MySQL server */
@@ -194,7 +212,7 @@ function display_billet_list() {
 /**
  * Generates department dropdown list.
  */
-function display_department_list() {
+function display_dropdown_department_list() {
 	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
 	
 	/* Connect to the MySQL server */
@@ -214,6 +232,40 @@ function display_department_list() {
 			}
 		} else {
 			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain department list.</div>';
+		}
+	}
+}
+
+/**
+ * Generates user list.
+ */
+function display_user_list() {
+	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_userlist = mysqli_query($mysql_connection, "SELECT lastname, firstname, email, phone, billetid FROM users ORDER BY lastname LIMIT 500;");
+		if($query_userlist) {
+			while($row = $query_userlist->fetch_assoc()) {
+				$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['billetid'] . "';");
+				echo '	';
+				echo '<tr><td>' . $row['lastname'] . '</td><td>' . $row['firstname'] . '</td><td>' . $row['email'] . '</td><td>' . $row['phone'] . '</td>';
+				if($query_billet && ($query_billet->num_rows == 1)) {
+					$billet = $query_billet->fetch_assoc();
+					echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;
+				} else {
+					echo '<td><div class="alert alert-warning" role="alert">Could not obtain billet name.</div></td>';
+				}
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 		}
 	}
 }

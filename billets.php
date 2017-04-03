@@ -76,8 +76,9 @@ function submit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	global $billet_name, $billet_department;
+	global $billet_name, $billet_department, $billet_edit;
 	$billet_name = filter_var($_POST['billetname'], FILTER_SANITIZE_STRING);
+	$billet_edit = filter_var($_POST['billetedit'], FILTER_SANITIZE_STRING);
 	$billet_departmentid = filter_VAR($_POST['department'], FILTER_SANITIZE_NUMBER_INT);
 }
 
@@ -99,7 +100,7 @@ function display_unsubmitted_page_contents() {
 	echo '<form name="addbilletform" action="billets.php" method="POST">
 		<table class="table">
 				<tr>
-				<td colspan="2">Add a new Billet</td>
+				<td colspan="2">Add a New Billet</td>
 				</tr>
 				<tr>
 				<td>Billet Name:</td>
@@ -118,6 +119,37 @@ function display_unsubmitted_page_contents() {
 				<td><input type="submit" name="Submit" /></td>
 				</tr>
 		</table>
+</form>';
+	echo '<form name="editbilletform" action="billets.php" method="POST">
+		<table class="table">
+				<tr>
+				<td colspan="2">Edit an Existing Billet"</td>
+				</tr>
+				<tr>
+				<td>Billet Name:</td>
+				<td>
+					<select name="billetname">' .PHP_EOL;
+	display_dropdown_billet_list();
+	echo '				</select>
+				</td>
+				</tr>
+				<tr>
+				<td>New Billet Name:</td>
+				<td><input type="text" name="billetedit" /></td>
+				</tr>
+				<tr>
+				<td>Department:</td>
+				<td>
+					<select name="department">' . PHP_EOL;
+	display_dropdown_department_list();
+	echo '					</select>
+				</td>
+				</tr>
+				<tr>
+				<td></td>
+				<td><input type="submit" name="Edit" /></td>
+				</tr>
+			</table>
 </form>';
 	echo '<h4>All billets</h4>' . PHP_EOL;
 	echo '<div class="table-responsive">' . PHP_EOL;
@@ -162,6 +194,55 @@ function display_dropdown_department_list() {
 	}
 }
 
+/**
+ * Generates dropdown billet list.
+ */
+function display_dropdown_billet_list(){
+	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
+		if($query_billetlist){
+			while($row = $query_billetlist->fetch_assoc()) {
+				echo '						';
+				echo '<option value="' . $row['billet_name'] . '">' . $row['name'] . '</option>' . PHP_EOL;  //double check billet variable
+			}
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
+		}
+}
+
+/**
+ * Edits existing billet list
+ */
+function edit_billet_list(){
+	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect; 
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		$query_billetlist = mysqli_query($mysql_connection, "UPDATE billets SET name=billetedit WHERE name=billetname;");
+		if($query_billetlist){
+			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . "was changed to" . $billet_edit . " successfully.</div>";
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
+		}
+}
+ 
 /**
  * Generates billet list.
  */

@@ -31,21 +31,24 @@ function check_post() {
 	global $_POST;
 	global $template_footer, $nav_sidebar;
 	
-	if(!isset($_POST['billetname']) || ($_POST['billetname'] == "")/* || !isset($_POST['department']) || ($_POST['department'] == "")*/) {
+	if(isset($_POST['billetname']) && ($_POST['billetname'] != "")) {
+		submit_add();
+	} else if(isset($_POST['billetid']) && ($_POST['billetid'] != "")) {
+		echo $_POST['billetid'];
+		submit_edit();
+	} else {
 		echo $nav_sidebar;
 		echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 		display_unsubmitted_page_contents();
 		echo $template_footer;
 		exit();
-	} else {
-		submit();
 	}
 }
 
 /**
  * Sets variables, connects to database, and inserts contents into database.
  */
-function submit() {
+function submit_add() {
 	global $mysql_error_connect, $template_footer, $nav_sidebar;
 	global $mysql_connection, $billet_name, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
 	check_vars();
@@ -61,11 +64,43 @@ function submit() {
 		/* Connected */
 		echo $nav_sidebar;
 		echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
-		$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, departmentid) VALUES ('" . $billet_name . "', '" . $billet_departmentid . "');");
+		$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, departmentid) VALUES ('" . $billet_edit . "', '" . $billet_departmentid . "');");
 		if($query_result) {
-			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . " added.</div>";
+			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_edit. " added.</div>";
 		} else {
 			echo '<div class="alert alert-danger" role="alert">Error: Could not add billet to database.</p>';
+		}
+		display_unsubmitted_page_contents();
+		mysqli_close();
+	}
+}
+
+
+/**
+ * Sets variables, connects to database, and inserts contents into database.
+ */
+function submit_edit() {
+	global $mysql_error_connect, $template_footer, $nav_sidebar;
+	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $billet_id, $billet_name, $billet_edit;
+	check_vars();
+	
+	/* Connect to the MySQL server */
+	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
+	if (!$mysql_connection) {
+		/* Couldn't connect */
+		echo $mysql_error_connect;
+		echo $template_footer;
+		exit();
+	} else {
+		/* Connected */
+		echo $nav_sidebar;
+		echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+		$query_result = mysqli_query($mysql_connection, "UPDATE billets SET name='" . $billet_edit . "' WHERE billetid='" . $billet_id . "';");
+		if($query_result) {
+			echo '<div class="alert alert-success" role="alert">Success: billet name changed to ' . $billet_edit . ".</div>";
+		} else {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</p>';
 		}
 		display_unsubmitted_page_contents();
 		mysqli_close();
@@ -76,8 +111,9 @@ function submit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	global $billet_name, $billet_department, $billet_edit;
+	global $billet_name, $billet_department, $billet_edit, $billet_id;
 	$billet_name = filter_var($_POST['billetname'], FILTER_SANITIZE_STRING);
+	$billet_id = filter_var($_POST['billetid'], FILTER_SANITIZE_NUMBER_INT);
 	$billet_edit = filter_var($_POST['billetedit'], FILTER_SANITIZE_STRING);
 	$billet_departmentid = filter_VAR($_POST['department'], FILTER_SANITIZE_NUMBER_INT);
 }
@@ -97,11 +133,9 @@ function display_submitted_page_contents() {
 function display_unsubmitted_page_contents() {
 	global $template_footer, $nav_sidebar;
 	echo '<h1>Billets</h1>' . PHP_EOL;
+	echo '<h4>Add a new billet</h4>' .  PHP_EOL;
 	echo '<form name="addbilletform" action="billets.php" method="POST">
 		<table class="table">
-				<tr>
-				<td colspan="2">Add a New Billet</td>
-				</tr>
 				<tr>
 				<td>Billet Name:</td>
 				<td><input type="text" name="billetname" /></td>
@@ -120,15 +154,13 @@ function display_unsubmitted_page_contents() {
 				</tr>
 		</table>
 </form>';
+	echo '<h4>Edit an existing billet</h4>' .  PHP_EOL;
 	echo '<form name="editbilletform" action="billets.php" method="POST">
 		<table class="table">
 				<tr>
-				<td colspan="2">Edit an Existing Billet"</td>
-				</tr>
-				<tr>
 				<td>Billet Name:</td>
 				<td>
-					<select name="billetname">' .PHP_EOL;
+					<select name="billetid">' .PHP_EOL;
 	display_dropdown_billet_list();
 	echo '				</select>
 				</td>
@@ -213,34 +245,12 @@ function display_dropdown_billet_list(){
 		if($query_billetlist){
 			while($row = $query_billetlist->fetch_assoc()) {
 				echo '						';
-				echo '<option value="' . $row['billet_name'] . '">' . $row['name'] . '</option>' . PHP_EOL;  //double check billet variable
+				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL;  //double check billet variable
 			}
 		} else {
 			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 		}
-}
-
-/**
- * Edits existing billet list
- */
-function edit_billet_list(){
-	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect; 
-	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
-		echo $template_footer;
-		exit();
-	} else {
-		/* Connected */
-		$query_billetlist = mysqli_query($mysql_connection, "UPDATE billets SET name=billetedit WHERE name=billetname;");
-		if($query_billetlist){
-			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . "was changed to" . $billet_edit . " successfully.</div>";
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
-		}
+	}
 }
  
 /**
@@ -276,4 +286,5 @@ function display_billet_list() {
 		}
 	}
 }
+
 ?>

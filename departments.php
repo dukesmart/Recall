@@ -3,12 +3,15 @@
  * This is the page in which an administrator may add new departments.
  * @package adddepartment.php
  */
-
-@include 'config.php';
 @include 'template.php';
+@include 'lib.php';
 
-session_start();
-check_session();
+if(mysql_setup()) {
+	session_start();
+	check_session();
+} else {
+	exit();
+}
 
 /**
  * Check to see if a user has previously logged in.
@@ -49,25 +52,15 @@ function submit() {
 	global $mysql_connection, $department_name, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
 	check_vars();
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect;
-		echo $template_footer;
-		exit();
+	/* Connected */
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES ('" . $department_name . "');");
+	if($query_result) {
+		echo '<div class="alert alert-success" role="alert"> Success: ' . $department_name . ' added.</div>';
 	} else {
-		/* Connected */
-		$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES ('" . $department_name . "');");
-		if($query_result) {
-			echo '<div class="alert alert-success" role="alert"> Success: ' . $department_name . ' added.</div>';
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not add department to database.</div>';
-		}
-		display_submitted_page_contents();
-		
-		mysqli_close();
+		echo '<div class="alert alert-danger" role="alert">Error: Could not add department to database.</div>';
 	}
+	display_submitted_page_contents();
+	
 }
 
 /**
@@ -143,26 +136,16 @@ function display_unsubmitted_page_contents() {
  * Generates billet dropdown list.
  */
 function display_dropdown_billet_list() {
-	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	global $mysql_connection;
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
-		echo $template_footer;
-		exit();
-	} else {
-		/* Connected */
-		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
-		if($query_billetlist) {
-			while($row = $query_billetlist->fetch_assoc()) {
-				echo '							';
-				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
-			}
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>' . PHP_EOL;
+	$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
+	if($query_billetlist) {
+		while($row = $query_billetlist->fetch_assoc()) {
+			echo '							';
+			echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
 		}
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>' . PHP_EOL;
 	}
 }
 
@@ -170,33 +153,25 @@ function display_dropdown_billet_list() {
  * Generates department list.
  */
 function display_department_list() {
-	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	global $mysql_connection;
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
-		echo $template_footer;
-		exit();
-	} else {
-		/* Connected */
-		$query_departmentlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
-		if($query_departmentlist) {
-			while($row = $query_departmentlist->fetch_assoc()) {
-				$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['rootbilletid'] . "';");
-				echo '	';
-				echo '<tr><td>' . $row['name'] . '</td>';
-				if($query_billet && ($query_billet->num_rows == 1)) {
-					$billet = $query_billet->fetch_assoc();
-					echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;
-				} else {
-					echo '<td><div class="alert alert-warning" role="alert">Could not obtain billet name.</div></td>';
-				}
+	$query_departmentlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
+	if($query_departmentlist) {
+		while($row = $query_departmentlist->fetch_assoc()) {
+			$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['rootbilletid'] . "';");
+			echo '	';
+			echo '<tr><td>' . $row['name'] . '</td>';
+			if($query_billet && ($query_billet->num_rows == 1)) {
+				$billet = $query_billet->fetch_assoc();
+				echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;
+			} else {
+				echo '<td><div class="alert alert-warning" role="alert">Could not obtain billet name.</div></td>';
 			}
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 		}
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 	}
 }
+
+mysqli_close($mysql_connection);
 ?>

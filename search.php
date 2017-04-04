@@ -3,11 +3,15 @@
  * Page used to execute and display search results.
  * @package search.php
  */
-@include 'config.php';
 @include 'template.php';
+@include 'lib.php';
 
-session_start();
-check_session();
+if(mysql_setup()) {
+	session_start();
+	check_session();
+} else {
+	exit();
+}
 
 /**
  * Check to see if a user has previously logged in.
@@ -39,23 +43,11 @@ function check_post() {
  */
 function submit() {
 	global $mysql_error_connect, $template_footer;
-	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
+	global $mysql_connection;
 	check_vars();
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect;
-		echo $template_footer;
-		exit;
-	} else {
-		/* Connected */
-		// TODO Search
-		display_submitted_page_contents();
-		
-		mysqli_close();
-	}
+	// TODO Search
+	display_submitted_page_contents();
 }
 
 /**
@@ -69,7 +61,7 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer, $nav_sidebar, $template_footer,$template_header;
+	global $template_header, $template_footer, $nav_sidebar;
 	
 	echo $template_header;
 	
@@ -82,11 +74,12 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_footer, $nav_sidebar, $template_footer;
+	global $template_header, $template_footer, $nav_sidebar;
 	
 	echo $template_header;
 	echo $nav_sidebar;
 	echo $template_footer;
 }
 
+mysqli_close($mysql_connection);
 ?>

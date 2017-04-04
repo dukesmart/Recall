@@ -3,44 +3,36 @@
  * This is the login page, and the start of the website.
  * @package index.php
 */
-
-@include 'config.php';
 @include 'template.php';
+@include 'lib.php';
 
-check_session();
+if(mysql_setup()) {
+	check_session();
+} else {
+	exit();
+}
 
 /**
  * Check to see if a user has previously logged in.
  */
 function check_session() {
 	global $_SESSION;
-	global $mysql_error_connect, $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $mysql_connection;
 	global $template_header;
 	
 	session_start();
 	if(isset($_SESSION['email'])) {
 		echo $template_header;
-		/* Connect to the MySQL server */
-		$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-		if (!$mysql_connection) {
-			/* Couldn't connect */
-			echo $mysql_error_connect;
+		$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $_SESSION['email'] . "';");
+		/* There are 0 results if there are no matching email/password combinations */
+		if($user_query->num_rows == 0) {
+			echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
 			echo $template_footer;
-			exit;
+			exit();
 		} else {
-			/* Connected */
-			$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $_SESSION['email'] . "';");
-			/* There are 0 results if there are no matching email/password combinations */
-			if($user_query->num_rows == 0) {
-				echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
-				echo $template_footer;
-				exit();
-			} else {
-				display_submitted_page_contents($user_query);
-			}
-			
-			mysqli_close($mysql_connection);
+			display_submitted_page_contents($user_query);
 		}
+		
 	} else {
 		echo $template_header;
 		check_post();
@@ -65,30 +57,19 @@ function check_post() {
  */
 function submit() {
 	global $template_footer;
-	global $mysql_error_connect, $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $mysql_connection;
 	global $email_address, $hashed_password;
 	check_vars();
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect;
-		echo $template_footer;
-		exit;
+	/* Connected */
+	$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "' AND password='" . $hashed_password . "';");
+	/* There are 0 results if there are no matching email/password combinations */
+	if($user_query->num_rows == 0) {
+		echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
+		display_unsubmitted_page_contents();
 	} else {
-		/* Connected */
-		$user_query = mysqli_query($mysql_connection, "SELECT * FROM users WHERE email='" . $email_address . "' AND password='" . $hashed_password . "';");
-		/* There are 0 results if there are no matching email/password combinations */
-		if($user_query->num_rows == 0) {
-			echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
-			display_unsubmitted_page_contents();
-		} else {
-			$_SESSION['email'] = $email_address;
-			display_submitted_page_contents($user_query);
-		}
-		
-		mysqli_close($mysql_connection);
+		$_SESSION['email'] = $email_address;
+		display_submitted_page_contents($user_query);
 	}
 }
 
@@ -241,4 +222,6 @@ $content =
 					</table>
 				</div>
 			</main>' . PHP_EOL;
+
+mysqli_close($mysql_connection);
 ?>

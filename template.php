@@ -84,6 +84,4 @@ $template_footer =
 	<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 </body>
 </html>';
-
-$mysql_error_connect = '<div class="alert alert-danger" role="alert">Error: Unable to connect to MySQL.</div>' . PHP_EOL;
 ?>

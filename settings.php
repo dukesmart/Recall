@@ -3,11 +3,15 @@
  * This page is the page in which an administrator may edit the administrative settings.
  * @package recall.php
  */
-
-@include 'config.php';
 @include 'template.php';
+@include 'lib.php';
 
-check_session();
+if(mysql_setup()) {
+	session_start();
+	check_session();
+} else {
+	exit();
+}
 
 /**
  * Check to see if a user has previously logged in.
@@ -40,24 +44,12 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
-	global $mysql_error_connect, $template_footer;
-	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
+	global $template_footer;
+	global $mysql_connection;
 	check_vars();
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect;
-		echo $template_footer;
-		exit;
-	} else {
-		/* Connected */
-		// TODO Search
-		display_submitted_page_contents();
-		
-		mysqli_close();
-	}
+	// TODO Display settings management
+	display_submitted_page_contents();
 }
 
 /**
@@ -92,4 +84,5 @@ function display_unsubmitted_page_contents() {
 	echo $template_footer;
 }
 
+mysqli_close($mysql_connection);
 ?>

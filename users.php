@@ -3,12 +3,15 @@
  * This page is used for adding new users to the database.
  * @package adduser.php
  */
-
-@include 'config.php';
 @include 'template.php';
+@include 'lib.php';
 
-session_start();
-check_session();
+if(mysql_setup()) {
+	session_start();
+	check_session();
+} else {
+	exit();
+}
 
 /**
  * Check to see if a user has previously logged in.
@@ -47,27 +50,16 @@ function check_post() {
 function submit() {
 	global $mysql_error_connect, $template_footer;
 	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
-	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $mysql_connection, $template_footer;
 	check_vars();
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect;
-		echo $template_footer;
-		exit();
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "');");
+	if($query_result) {
+		echo '<div class="alert alert-success" role="alert">Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</div>';
 	} else {
-		/* Connected */
-		$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "');");
-		if($query_result) {
-			echo '<div class="alert alert-success" role="alert">Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</div>';
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
-		}
-		display_unsubmitted_page_contents();
-		echo $template_footer;
+		echo '<div class="alert alert-danger" role="alert">Error: Could not add user to database.</div>';
 	}
+	display_unsubmitted_page_contents();
 }
 
 
@@ -186,26 +178,16 @@ function display_unsubmitted_page_contents() {
  * Generates billet dropdown list.
  */
 function display_dropdown_billet_list() {
-	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	global $mysql_connection;
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
-		echo $template_footer;
-		exit();
-	} else {
-		/* Connected */
-		$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
-		if($query_billetlist) {
-			while($row = $query_billetlist->fetch_assoc()) {
-				echo '						';
-				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
-			}
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
+	$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
+	if($query_billetlist) {
+		while($row = $query_billetlist->fetch_assoc()) {
+			echo '						';
+			echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
 		}
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 	}
 }
 
@@ -213,26 +195,16 @@ function display_dropdown_billet_list() {
  * Generates department dropdown list.
  */
 function display_dropdown_department_list() {
-	global $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	global $mysql_connection;
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
-		echo $template_footer;
-		exit();
-	} else {
-		/* Connected */
-		$query_deptlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
-		if($query_deptlist) {
-			while($row = $query_deptlist->fetch_assoc()) {
-				echo '						';
-				echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
-			}
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain department list.</div>';
+	$query_deptlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
+	if($query_deptlist) {
+		while($row = $query_deptlist->fetch_assoc()) {
+			echo '						';
+			echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
 		}
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain department list.</div>';
 	}
 }
 
@@ -240,33 +212,25 @@ function display_dropdown_department_list() {
  * Generates user list.
  */
 function display_user_list() {
-	global $mysql_connection, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result, $mysql_error_connect;
+	global $mysql_connection;
 	
-	/* Connect to the MySQL server */
-	$mysql_connection = mysqli_connect($mysql_host, $mysql_username, $mysql_password, $mysql_database);
-	if (!$mysql_connection) {
-		/* Couldn't connect */
-		echo $mysql_error_connect . PHP_EOL . '</main>' . PHP_EOL;
-		echo $template_footer;
-		exit();
-	} else {
-		/* Connected */
-		$query_userlist = mysqli_query($mysql_connection, "SELECT lastname, firstname, email, phone, billetid FROM users ORDER BY lastname LIMIT 500;");
-		if($query_userlist) {
-			while($row = $query_userlist->fetch_assoc()) {
-				$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['billetid'] . "';");
-				echo '	';
-				echo '<tr><td>' . $row['lastname'] . '</td><td>' . $row['firstname'] . '</td><td>' . $row['email'] . '</td><td>' . $row['phone'] . '</td>';
-				if($query_billet && ($query_billet->num_rows == 1)) {
-					$billet = $query_billet->fetch_assoc();
-					echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;
-				} else {
-					echo '<td><div class="alert alert-warning" role="alert">Could not obtain billet name.</div></td>';
-				}
+	$query_userlist = mysqli_query($mysql_connection, "SELECT lastname, firstname, email, phone, billetid FROM users ORDER BY lastname LIMIT 500;");
+	if($query_userlist) {
+		while($row = $query_userlist->fetch_assoc()) {
+			$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['billetid'] . "';");
+			echo '	';
+			echo '<tr><td>' . $row['lastname'] . '</td><td>' . $row['firstname'] . '</td><td>' . $row['email'] . '</td><td>' . $row['phone'] . '</td>';
+			if($query_billet && ($query_billet->num_rows == 1)) {
+				$billet = $query_billet->fetch_assoc();
+				echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;
+			} else {
+				echo '<td><div class="alert alert-warning" role="alert">Could not obtain billet name.</div></td>';
 			}
-		} else {
-			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 		}
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
 	}
 }
+
+mysqli_close($mysql_connection);
 ?>

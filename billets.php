@@ -38,7 +38,6 @@ function check_post() {
 	if(isset($_POST['billetname']) && ($_POST['billetname'] != "")) {
 		submit_add();
 	} else if(isset($_POST['billetid']) && ($_POST['billetid'] != "")) {
-		echo $_POST['billetid'];
 		submit_edit();
 	} else {
 		echo $nav_sidebar;
@@ -50,11 +49,11 @@ function check_post() {
 }
 
 /**
- * Sets variables, connects to database, and inserts contents into database.
+ * Sets variables, and inserts contents into database.
  */
 function submit_add() {
-	global $mysql_error_connect, $template_footer, $nav_sidebar;
-	global $mysql_connection, $billet_name, $template_footer;
+	global $template_footer, $nav_sidebar;
+	global $mysql_connection, $billet_name;
 	check_vars();
 	
 	echo $nav_sidebar;
@@ -68,14 +67,13 @@ function submit_add() {
 	display_unsubmitted_page_contents();
 }
 
-
 /**
- * Sets variables, connects to database, and inserts contents into database.
+ * Sets variables, and updates contents in database.
  */
 function submit_edit() {
 	global $template_footer, $nav_sidebar;
 	global $mysql_connection;
-	global $billet_id, $billet_name, $billet_edit;
+	global $billet_id, $billet_edit;
 	check_vars();
 	
 	echo $nav_sidebar;

@@ -34,26 +34,27 @@ function check_session() {
 function check_post() {
 	global $_POST;
 	global $template_footer;
-
-	if(!isset($_POST['departmentname']) /*|| !isset($_POST['rootbillet'])*/) {
+	
+	if(isset($_POST['departmentname']) && ($_POST['departmentname'] != "")) {
+		submit_add();
+	} else if(isset($_POST['departmentid']) && ($_POST['departmentid'] != "")) {
+		submit_edit();
+	} else {
 		display_unsubmitted_page_contents();
 		echo $template_footer;
 		exit();
-	} else {
-		submit();
 	}
 }
 
 /**
- * Sets variables, connects to database, and inserts contents into database.
+ * Sets variables, and inserts contents into database.
  */
-function submit() {
+function submit_add() {
 	global $mysql_error_connect, $template_footer;
-	global $mysql_connection, $department_name, $template_footer, $mysql_host, $mysql_username, $mysql_password, $mysql_database, $query_result;
+	global $mysql_connection, $department_name, $department_root_billet;
 	check_vars();
 	
-	/* Connected */
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name) VALUES ('" . $department_name . "');");
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO departments (name, rootbilletid) VALUES ('" . $department_name . "', '" . $department_root_billet . "');");
 	if($query_result) {
 		echo '<div class="alert alert-success" role="alert"> Success: ' . $department_name . ' added.</div>';
 	} else {
@@ -64,13 +65,36 @@ function submit() {
 }
 
 /**
+ * Sets variables, and inserts contents into database.
+ */
+function submit_edit() {
+	global $template_footer, $nav_sidebar;
+	global $mysql_connection;
+	global $department_id, $department_edit, $department_root_billet_new;
+	check_vars();
+	
+	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	$query_result = mysqli_query($mysql_connection, "UPDATE departments SET name='" . $department_edit . "', rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';");
+	if($query_result) {
+		echo '<div class="alert alert-success" role="alert">Success: billet name changed to ' . $department_edit . ".</div>";
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</p>';
+	}
+	display_unsubmitted_page_contents();
+}
+
+/**
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
 	global $department_name, $department_root_billet;
 	
 	$department_name = filter_var($_POST['departmentname'], FILTER_SANITIZE_STRING);
-	//$department_root_billet = filter_var($_POST['rootbillet'], FILTER_SANITIZE_NUMBER_INT);
+	$department_id = filter_var($_POST['departmentid'], FILTER_SANITIZE_NUMBER_INT);
+	$department_edit = filter_var($_POST['departmentedit'], FILTER_SANITIZE_STRING);
+	$department_root_billet_new = filter_VAR($_POST['newrootbillet'], FILTER_SANITIZE_NUMBER_INT);
+	$department_root_billet = filter_var($_POST['rootbillet'], FILTER_SANITIZE_NUMBER_INT);
 }
 
 /**
@@ -103,7 +127,7 @@ function display_unsubmitted_page_contents() {
 					<tr>
 					<td>Root Billet:</td>
 					<td>
-						<select name="billetid">
+						<select name="rootbillet">
 							<option value="0">Default</option>' . PHP_EOL;
 	display_dropdown_billet_list();
 	echo '						</select>
@@ -116,6 +140,36 @@ function display_unsubmitted_page_contents() {
 			</table>
 		</div>
 	</form>' . PHP_EOL;
+	
+	echo '<h4>Edit an existing billet</h4>' .  PHP_EOL;
+	echo '<form name="editdepartmentform" action="departments.php" method="POST">
+		<table class="table">
+				<tr>
+				<td>Department Name:</td>
+				<td>
+					<select name="departmentid">' .PHP_EOL;
+	display_dropdown_department_list();
+	echo '				</select>
+				</td>
+				</tr>
+				<tr>
+				<td>New Department Name:</td>
+				<td><input type="text" name="departmentedit" /></td>
+				</tr>
+				<tr>
+				<td>Department:</td>
+				<td>
+					<select name="department">' . PHP_EOL;
+	//display_dropdown_department_list();
+	echo '					</select>
+				</td>
+				</tr>
+				<tr>
+				<td></td>
+				<td><input type="submit" name="Edit" /></td>
+				</tr>
+			</table>
+</form>';
 	echo '<h4>All departments</h4>' . PHP_EOL;
 	echo '<div class="table-responsive">' . PHP_EOL;
 	echo '<table class="table table-striped">' . PHP_EOL;
@@ -170,6 +224,23 @@ function display_department_list() {
 		}
 	} else {
 		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
+	}
+}
+
+/**
+ * Generates department dropdown list.
+ */
+function display_dropdown_department_list() {
+	global $mysql_connection;
+	
+	$query_deptlist = mysqli_query($mysql_connection, "SELECT * FROM departments ORDER BY name;");
+	if($query_deptlist) {
+		while($row = $query_deptlist->fetch_assoc()) {
+			echo '						';
+			echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
+		}
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain department list.</div>';
 	}
 }
 

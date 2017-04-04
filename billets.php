@@ -213,7 +213,7 @@ function display_dropdown_billet_list(){
 		if($query_billetlist){
 			while($row = $query_billetlist->fetch_assoc()) {
 				echo '						';
-				echo '<option value="' . $row['billet_name'] . '">' . $row['name'] . '</option>' . PHP_EOL;  //double check billet variable
+				echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
 			}
 		} else {
 			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
@@ -235,7 +235,7 @@ function edit_billet_list(){
 		exit();
 	} else {
 		/* Connected */
-		$query_billetlist = mysqli_query($mysql_connection, "UPDATE billets SET name=billetedit WHERE name=billetname;");
+		$query_billetlist = mysqli_query($mysql_connection, "UPDATE billets SET name=('" . $billet_edit . "') WHERE name=('" . $billet_name . "');");
 		if($query_billetlist){
 			echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . "was changed to" . $billet_edit . " successfully.</div>";
 		} else {

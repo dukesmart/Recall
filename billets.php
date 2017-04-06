@@ -53,14 +53,14 @@ function check_post() {
  */
 function submit_add() {
 	global $template_footer, $nav_sidebar;
-	global $mysql_connection, $billet_name;
+	global $mysql_connection, $billet_name, $billet_departmentid;
 	check_vars();
 	
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, departmentid) VALUES ('" . $billet_edit . "', '" . $billet_departmentid . "');");
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, departmentid) VALUES ('" . $billet_name . "', '" . $billet_departmentid . "');");
 	if($query_result) {
-		echo '<div class="alert alert-success" role="alert">Success: ' . $billet_edit. " added.</div>";
+		echo '<div class="alert alert-success" role="alert">Success: ' . $billet_name . " added.</div>";
 	} else {
 		echo '<div class="alert alert-danger" role="alert">Error: Could not add billet to database.</p>';
 	}
@@ -73,12 +73,12 @@ function submit_add() {
 function submit_edit() {
 	global $template_footer, $nav_sidebar;
 	global $mysql_connection;
-	global $billet_id, $billet_edit;
+	global $billet_id, $billet_edit, $billet_departmentedit;
 	check_vars();
 	
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
-	$query_result = mysqli_query($mysql_connection, "UPDATE billets SET name='" . $billet_edit . "' WHERE billetid='" . $billet_id . "';");
+	$query_result = mysqli_query($mysql_connection, "UPDATE billets SET name='" . $billet_edit . "', departmentid='" . $billet_departmentedit . "' WHERE billetid='" . $billet_id . "';");
 	if($query_result) {
 		echo '<div class="alert alert-success" role="alert">Success: billet name changed to ' . $billet_edit . ".</div>";
 	} else {
@@ -93,9 +93,12 @@ function submit_edit() {
 function check_vars() {
 	global $billet_name, $billet_department, $billet_edit, $billet_id;
 	$billet_name = filter_var($_POST['billetname'], FILTER_SANITIZE_STRING);
+	$billet_departmentid = filter_VAR($_POST['department'], FILTER_SANITIZE_NUMBER_INT);
+	
 	$billet_id = filter_var($_POST['billetid'], FILTER_SANITIZE_NUMBER_INT);
 	$billet_edit = filter_var($_POST['billetedit'], FILTER_SANITIZE_STRING);
-	$billet_departmentid = filter_VAR($_POST['department'], FILTER_SANITIZE_NUMBER_INT);
+	$billet_departmentedit = filter_VAR($_POST['departmentid'], FILTER_SANITIZE_NUMBER_INT);
+	
 }
 
 /**
@@ -152,7 +155,7 @@ function display_unsubmitted_page_contents() {
 				<tr>
 				<td>Department:</td>
 				<td>
-					<select name="department">' . PHP_EOL;
+					<select name="departmentid">' . PHP_EOL;
 	display_dropdown_department_list();
 	echo '					</select>
 				</td>

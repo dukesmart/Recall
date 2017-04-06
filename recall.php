@@ -45,50 +45,67 @@ function check_post() {
  * Sets variables, connects to database, submits query to database.
  */
 function submit() {
-	global $mysql_error_connect, $template_footer;
+	global $_SESSION;
+	global $nav_sidebar, $template_footer;
 	global $mysql_connection;
-	global $send_email, $send_text;
+	global $send_email, $send_text, $recall_recipients;
 	check_vars();
 	
+	
+	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	
 	$recall_date = date("Y-m-d H:i:s");
 	// TODO Add initiator ID
 	/* Insert the recall */
-	$recall_query = mysqli_query($mysql_connection, "INSERT INTO recalls (datetime, message) VALUES ('" . $recall_date . "', '" . $recall_message . "');");
-	if(!$recall_query) {
-		/* Query failed */
-		echo '<div class="alert alert-danger" role="alert">Error: Failed to initiate recall. </div>';
+	$initiator_query = mysqli_query($mysql_connection, "SELECT userid FROM users WHERE email='" . $_SESSION['email'] . "';");
+	
+	/* There are 0 results if there are no matching email/password combinations */
+	if($initiator_query->num_rows == 0) {
+		echo '<div class="alert alert-danger" role="alert">Error: Incorrect email address or password.</div>' . PHP_EOL;
+		echo '</main>' .  PHP_EOL;
 		echo $template_footer;
 		exit();
 	} else {
-		/* Query to get the recall ID */
-		$recall_result = mysqli_query($mysql_connection, "SELECT * FROM recalls WHERE datetime='" . $date . "';");
+		$initiator = $initiator_query->fetch_assoc();
+		
+		$recall_query = mysqli_query($mysql_connection, "INSERT INTO recalls (datetime, message, initiatorid) VALUES ('" . $recall_date . "', '" . $recall_message . "', '" . $initiator['userid'] . "');");
 		if(!$recall_query) {
 			/* Query failed */
 			echo '<div class="alert alert-danger" role="alert">Error: Failed to initiate recall. </div>';
 			echo $template_footer;
 			exit();
 		} else {
-			$row = $recall_result->fetch_assoc();
-			$recall_id = $row['recallid'];
-			foreach($recall_recipients as $recipient) {
-				$recipient_query = mysqli_query($mysql_connection, "INSERT INTO recipients (userid, recallid) VALUES ('" . $recipient . "', '" . $recall_id . "');");
-				if(!$recipient_query) {
-					/* Query failed */
-					echo '<div class="alert alert-danger" role="alert">Error: Failed to add recipient. </div>';
-					echo $template_footer;
-					exit();
-				} else {
-					if($send_email) {
-						//TODO Send email here
-					}
-					
-					if($send_text) {
-						//TODO Send text message here
+			/* Query to get the recall ID */
+			$recall_result = mysqli_query($mysql_connection, "SELECT * FROM recalls WHERE datetime='" . $recall_date . "';");
+			if(!$recall_result) {
+				/* Query failed */
+				echo '<div class="alert alert-danger" role="alert">Error: Failed to initiate recall. </div>';
+				echo $template_footer;
+				exit();
+			} else {
+				$recall = $recall_result->fetch_assoc();
+				$recall_id = $recall['recallid'];
+				echo $recallid;
+				foreach($recall_recipients as $recipient) {
+					$recipient_query = mysqli_query($mysql_connection, "INSERT INTO recipients (userid, recallid) VALUES ('" . $recipient . "', '" . $recall_id . "');");
+					if(!$recipient_query) {
+						/* Query failed */
+						echo '<div class="alert alert-danger" role="alert">Error: Failed to add recipient. </div>';
+						echo $template_footer;
+						exit();
+					} else {
+						if($send_email) {
+							//TODO Send email here
+						}
+						
+						if($send_text) {
+							//TODO Send text message here
+						}
 					}
 				}
+				display_submitted_page_contents();
 			}
-			display_submitted_page_contents();
 		}
 	}
 }
@@ -123,8 +140,6 @@ function check_vars() {
  */
 function display_submitted_page_contents() {
 	global $template_footer, $nav_sidebar, $template_footer;
-	echo $nav_sidebar;
-	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<div class="alert alert-success" role="alert">Recall initiated.</div>' . PHP_EOL;
 	echo '</main>' . PHP_EOL;
 	echo $template_footer;
@@ -139,8 +154,8 @@ function display_unsubmitted_page_contents() {
 	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	
 	echo $nav_sidebar;
-	echo '<form name="recall" action="" method="POST">' . PHP_EOL;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	echo '<form name="recall" action="" method="POST">' . PHP_EOL;
 	echo '<h1>Recalls</h1>' . PHP_EOL;
 	$userlist_query = mysqli_query($mysql_connection, "SELECT userid, firstname, lastname, billetid FROM users ORDER BY lastname LIMIT 500;");
 	if(!$userlist_query) {

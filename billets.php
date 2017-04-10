@@ -78,11 +78,18 @@ function submit_edit() {
 	
 	echo $nav_sidebar;
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
-	$query_result = mysqli_query($mysql_connection, "UPDATE billets SET name='" . $billet_edit . "', departmentid='" . $billet_departmentedit . "' WHERE billetid='" . $billet_id . "';");
-	if($query_result) {
-		echo '<div class="alert alert-success" role="alert">Success: billet name changed to ' . $billet_edit . ".</div>";
+	$sql = "UPDATE billets SET ";
+	if(($billet_edit == "") || ($billet_edit == NULL)) {
+		$sql = $sql . "departmentid='" . $billet_departmentedit . "' WHERE billetid='" . $billet_id . "';";
 	} else {
-		echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</p>';
+		$sql = $sql . "name='" . $billet_edit . "', departmentid='" . $billet_departmentedit . "' WHERE billetid='" . $billet_id . "';";
+	}
+	
+	$query_result = mysqli_query($mysql_connection, $sql);
+	if($query_result) {
+		echo '<div class="alert alert-success" role="alert">Success.</div>';
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</div>';
 	}
 	display_unsubmitted_page_contents();
 }
@@ -91,7 +98,7 @@ function submit_edit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	global $billet_name, $billet_department, $billet_edit, $billet_id;
+	global $billet_name, $billet_departmentid, $billet_edit, $billet_id, $billet_departmentedit;
 	$billet_name = filter_var($_POST['billetname'], FILTER_SANITIZE_STRING);
 	$billet_departmentid = filter_VAR($_POST['department'], FILTER_SANITIZE_NUMBER_INT);
 	
@@ -225,11 +232,11 @@ function display_billet_list() {
 	$query_billetlist = mysqli_query($mysql_connection, "SELECT * FROM billets ORDER BY name;");
 	if($query_billetlist) {
 		while($row = $query_billetlist->fetch_assoc()) {
-			$query_department = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['rootbilletid'] . "';");
+			$query_department = mysqli_query($mysql_connection, "SELECT * FROM departments WHERE departmentid='" . $row['departmentid'] . "';");
 			echo '	';
 			echo '<tr><td>' . $row['name'] . '</td>';
 			if($query_department && ($query_department->num_rows == 1)) {
-				$billet = $query_department->fetch_assoc();
+				$department = $query_department->fetch_assoc();
 				echo '<td>' . $department['name'] . '</td></tr>' . PHP_EOL;
 			} else {
 				echo '<td><div class="alert alert-warning" role="alert">Could not obtain department name.</div></td>';

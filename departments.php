@@ -65,6 +65,33 @@ function submit_add() {
 }
 
 /**
+ * Sets variables, and updates contents in database.
+ */
+function submit_edit() {
+	global $template_footer, $nav_sidebar;
+	global $mysql_connection;
+	global $billet_id, $billet_edit, $billet_departmentedit;
+	check_vars();
+	
+	echo $nav_sidebar;
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	$sql = "UPDATE departments SET ";
+	if(($billet_edit == "") || ($billet_edit == NULL)) {
+		$sql = $sql . "rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';";
+	} else {
+		$sql = $sql . "name='" . $department_edit . "', rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';";
+	}
+	
+	$query_result = mysqli_query($mysql_connection, $sql);
+	if($query_result) {
+		echo '<div class="alert alert-success" role="alert">Success.</div>';
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</div>';
+	}
+	display_unsubmitted_page_contents();
+}
+
+/**
  * Sets variables, and inserts contents into database.
  */
 function submit_edit() {
@@ -88,7 +115,7 @@ function submit_edit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	global $department_name, $department_root_billet;
+	global $department_name, $department_root_billet, $department_id, $department_edit, $department_edit, $department_root_billet_new;
 	
 	$department_name = filter_var($_POST['departmentname'], FILTER_SANITIZE_STRING);
 	$department_id = filter_var($_POST['departmentid'], FILTER_SANITIZE_NUMBER_INT);
@@ -157,10 +184,10 @@ function display_unsubmitted_page_contents() {
 				<td><input type="text" name="departmentedit" /></td>
 				</tr>
 				<tr>
-				<td>Department:</td>
+				<td>Root Billet:</td>
 				<td>
-					<select name="department">' . PHP_EOL;
-	//display_dropdown_department_list();
+					<select name="newrootbillet">' . PHP_EOL;
+	display_dropdown_billet_list();
 	echo '					</select>
 				</td>
 				</tr>

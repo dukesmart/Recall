@@ -75,7 +75,7 @@ $nav_sidebar =
 /**
 * WEYLIN CHANGES
 * This sidebar is used for users who do not have administrator priviledges to send recalls and whatnot. 
-* Right now it only allows the use of the users tab, but that'll change at some point to just be their own info.
+* Right now it only allows the use of the Overview tab, but that'll change at some point to just be their own info.
 * Dustin, let me know what you think about restricting what non-admins see this way. Maybe you know a better way. 
 * also, I don't really know how I can run this sucker to test it... 
 */
@@ -109,9 +109,6 @@ $nav_sidebar_non_admin =
 				<ul class="nav nav-pills flex-column">
 					<li class="nav-item">
 						<a class="nav-link active" href="index.php">Overview<span class="sr-only">(current)</span></a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="users.php">Users</a>
 					</li>
 				</ul>
 			</nav>

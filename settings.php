@@ -63,9 +63,9 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer, $nav_sidebar, $template_footer;
+	global $template_footer, $template_footer;
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	
 	echo $template_footer;
 }
@@ -74,10 +74,10 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_footer, $nav_sidebar, $template_footer;
+	global $template_footer, $template_footer;
 	
 	echo $template_header;
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Settings</h1>' . PHP_EOL;
 	echo '</main>';

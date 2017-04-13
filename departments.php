@@ -68,12 +68,12 @@ function submit_add() {
  * Sets variables, and updates contents in database.
  */
 function submit_edit() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	global $mysql_connection;
 	global $billet_id, $billet_edit, $billet_departmentedit;
 	check_vars();
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	$sql = "UPDATE departments SET ";
 	if(($billet_edit == "") || ($billet_edit == NULL)) {
@@ -95,12 +95,12 @@ function submit_edit() {
  * Sets variables, and inserts contents into database.
  */
 function submit_edit() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	global $mysql_connection;
 	global $department_id, $department_edit, $department_root_billet_new;
 	check_vars();
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	$query_result = mysqli_query($mysql_connection, "UPDATE departments SET name='" . $department_edit . "', rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';");
 	if($query_result) {
@@ -128,9 +128,9 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo $template_footer;
 }
 
@@ -138,9 +138,9 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Departments</h1>' . PHP_EOL;
 	echo '<h4>Add a new department</h4>' . PHP_EOL;

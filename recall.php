@@ -46,13 +46,13 @@ function check_post() {
  */
 function submit() {
 	global $_SESSION;
-	global $nav_sidebar, $template_footer;
+	global $template_footer;
 	global $mysql_connection;
 	global $send_email, $send_text, $recall_recipients;
 	check_vars();
 	
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	
 	$recall_date = date("Y-m-d H:i:s");
@@ -139,7 +139,7 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer, $nav_sidebar, $template_footer;
+	global $template_footer, $template_footer;
 	echo '<div class="alert alert-success" role="alert">Recall initiated.</div>' . PHP_EOL;
 	echo '</main>' . PHP_EOL;
 	echo $template_footer;
@@ -150,10 +150,10 @@ function display_submitted_page_contents() {
  */
 function display_unsubmitted_page_contents() {
 	global $mysql_error_connect;
-	global $template_footer, $nav_sidebar, $template_footer;
+	global $template_footer, $template_footer;
 	global $mysql_connection, $mysql_host, $mysql_username, $mysql_password, $mysql_database;
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<form name="recall" action="" method="POST">' . PHP_EOL;
 	echo '<h1>Recalls</h1>' . PHP_EOL;

@@ -30,10 +30,10 @@ function check_session() {
  * Check POST variables to see if are contents to submit.
  */
 function check_post() {
-	global $_POST, $nav_sidebar, $template_header;
+	global $_POST, $template_header;
 	
 	echo $template_header;
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	
 	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['password1']) || !isset($_POST['password2'])) {
@@ -86,7 +86,7 @@ function check_vars() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_header, $template_footer, $nav_sidebar;
+	global $template_header, $template_footer;
 	
 	echo '<h1>Users</h1>' . PHP_EOL;
 	echo '<h4>Add a new user</h4>';

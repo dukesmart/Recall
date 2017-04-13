@@ -33,14 +33,14 @@ function check_session() {
  */
 function check_post() {
 	global $_POST;
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	
 	if(isset($_POST['billetname']) && ($_POST['billetname'] != "")) {
 		submit_add();
 	} else if(isset($_POST['billetid']) && ($_POST['billetid'] != "")) {
 		submit_edit();
 	} else {
-		echo $nav_sidebar;
+		echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 		echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 		display_unsubmitted_page_contents();
 		echo $template_footer;
@@ -52,11 +52,11 @@ function check_post() {
  * Sets variables, and inserts contents into database.
  */
 function submit_add() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	global $mysql_connection, $billet_name, $billet_departmentid;
 	check_vars();
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, departmentid) VALUES ('" . $billet_name . "', '" . $billet_departmentid . "');");
 	if($query_result) {
@@ -71,12 +71,12 @@ function submit_add() {
  * Sets variables, and updates contents in database.
  */
 function submit_edit() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	global $mysql_connection;
 	global $billet_id, $billet_edit, $billet_departmentedit;
 	check_vars();
 	
-	echo $nav_sidebar;
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	$sql = "UPDATE billets SET ";
 	if(($billet_edit == "") || ($billet_edit == NULL)) {
@@ -112,7 +112,7 @@ function check_vars() {
  * Display the contents of the page after the form has been submitted.
  */
 function display_submitted_page_contents() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	
 	echo $template_footer;
 }
@@ -121,7 +121,7 @@ function display_submitted_page_contents() {
  * Display the submission form page contents.
  */
 function display_unsubmitted_page_contents() {
-	global $template_footer, $nav_sidebar;
+	global $template_footer;
 	echo '<h1>Billets</h1>' . PHP_EOL;
 	echo '<h4>Add a new billet</h4>' .  PHP_EOL;
 	echo '<form name="addbilletform" action="billets.php" method="POST">

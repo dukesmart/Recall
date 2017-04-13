@@ -127,12 +127,29 @@ HERE;
  * @param MySQL_Query_Result $query_result Results of the query containing the user's data row.
  */
 function display_submitted_page_contents($user_query) {
-	global $template_footer, $nav_sidebar;
+	global $template_footer, $nav_sidebar, $nav_sidebar_non_admin;
 
 	/* User exists, continue */
 	$user = $user_query->fetch_assoc();
 	
-	echo $nav_sidebar;
+	
+	/**
+	* WEYLIN CHANGES
+	* Display the proper nav_sidebar for admin/non-admin users.
+	*/
+	if($user['privilege'] >= 2){
+		echo $nav_sidebar;
+	}else{
+		echo $nav_sidebar_non_admin;
+	}
+	/**OLD
+	*echo $nav_sidebar;
+	*/
+	/**
+	*END WEYLIN CHANGES
+	*/
+	
+	
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Dashboard</h1>' . PHP_EOL;
 	/* if(recall) {

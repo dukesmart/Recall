@@ -30,24 +30,26 @@ function check_session() {
  * Check POST variables to see if are contents to submit.
  */
 function check_post() {
-	global $_POST, $template_header;
-	
+	global $_POST, $template_header, $_SESSION;
 	echo $template_header;
 	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	
-	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['password1']) || !isset($_POST['password2'])) {
-		display_unsubmitted_page_contents();
-		exit();
+	if(isset($_SESSION['privilege']!=0) && isset($_POST['submit'])) {
+		submit_add();
+	} else if (($_SESSION['privilege']!=0) && isset($_POST['edit']))  {
+		submit_edit();
 	} else {
-		submit();
+		display_unsubmitted_page_contents;
+		echo $template_footer;
+		exit();
 	}
 }
 
 /**
  * Sets variables, connects to database, and inserts contents into database.
  */
-function submit() {
+function submit_add() {
 	global $mysql_error_connect, $template_footer;
 	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
 	global $mysql_connection, $template_footer;
@@ -62,12 +64,53 @@ function submit() {
 	display_unsubmitted_page_contents();
 }
 
+/**
+ * Sets variables, connects to database, and changes contents in database.
+ */
+function submit_edit() {
+	global $template_footer;
+	global $user_privilege_edit, $user_firstname_edit, $user_lastname_edit, $user_email_edit, $user_phone_edit, $user_billetid_edit, $user_hashed_password_edit;
+	global $mysql_connection;
+	check_vars();
+	
+	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
+	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
+	$sql = "UPDATE users SET ";
+	if(($user_firstname_edit != "") || ($user_firstname_edit != NULL)){
+		$sql = $sql . "firstname='" . $user_firstname_edit . "' WHERE email='" . $user_email_edit . "';";
+	}
+	if (($user_lastname_edit != "") || ($user_lastname_edit != NULL)){
+		$sql = $sql . "lastname='" . $user_lastname_edit . "' WHERE email='" . $user_email_edit . "';";	
+	}			
+	if (($user_phone_edit != "") || ($user_phone_edit != NULL)){
+		$sql = $sql . "phone='" . $user_phone_edit . "' WHERE email='" . $user_email_edit . "';";	
+	}				
+	if (($user_privilege_edit != "") || ($user_privilege_edit != NULL)){
+		$sql = $sql . "privilege='" . $user_privlege_edit . "' WHERE email='" . $user_email_edit . "';";
+	}	
+	if (($user_billetid_edit != "") || ($user_billetid_edit != NULL)){
+		$sql = $sql . "billetid='" . $user_billetid_edit . "' WHERE email='" . $user_email_edit . "';";	
+	}		
+	if ($user_hashed_password_edit == "") || ($user_hashed_password_edit == NULL)){
+		$sql = $sql . "password='" . $user_hashed_password_edit . "' WHERE email='" . $user_email_edit . "';";
+	}
+	
+	$query_result = mysqli_query($mysql_connection, $sql);
+	if($query_result) {
+		echo '<div class="alert alert-success" role="alert">Success: ' . $user_email_edit . ' has been modified.</div>';
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not edit existing user.</div>';
+	}
+	display_unsubmitted_page_contents();
+}
 
 /**
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
+	
 	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
+	
 	$user_firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
 	$user_lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
 	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -75,8 +118,21 @@ function check_vars() {
 	$user_privilege = filter_var($_POST['privilege'], FILTER_SANITIZE_NUMBER_INT);
 	$user_billetid = filter_var($_POST['billetid'], FILTER_SANITIZE_NUMBER_INT);
 	
+	$user_firstname_edit = filter_var($_POST['firstname_edit'], FILTER_SANITIZE_STRING);
+	$user_lastname_edit = filter_var($_POST['lastname_edit'], FILTER_SANITIZE_STRING);
+	$user_email_edit = filter_var(strtolower($_POST['email_edit']), FILTER_SANITIZE_EMAIL);
+	$user_phone_edit = filter_var(strtolower($_POST['phone_edit']), FILTER_SANITIZE_STRING);
+	$user_privilege_edit = filter_var($_POST['privilege_edit'], FILTER_SANITIZE_NUMBER_INT);
+	$user_billetid_edit = filter_var($_POST['billetid_edit'], FILTER_SANITIZE_NUMBER_INT);
+	
 	if($_POST['password1'] == $_POST['password2']) {
 		$user_hashed_password = filter_var(hash('sha256', $_POST['password1']), FILTER_SANITIZE_STRING);
+	} else {
+		echo '<div class="alert alert-danger" role="alert">Passwords do not match. </div>';
+	}
+	
+	if($_POST['password1_edit'] == $_POST['password2_edit']) {
+		$user_hashed_password_edit = filter_var(hash('sha256', $_POST['password1_edit']), FILTER_SANITIZE_STRING);
 	} else {
 		echo '<div class="alert alert-danger" role="alert">Passwords do not match. </div>';
 	}
@@ -148,6 +204,69 @@ function display_unsubmitted_page_contents() {
 				<tr>
 				<td></td>
 				<td><input type="submit" name="Submit" /></td>
+				</tr>
+		</table>
+		</div>
+</form>' . PHP_EOL;
+	echo '<h4>Edit an existing user</h4>';
+	echo '<form name="edituserform" action="users.php" method="POST">
+		<div class="table-responsive">
+		<table class="table">
+				<tr>
+				<td>E-mail of Existing User:</td>
+				<td><input type="text" name="email_edit" /></td>
+				</tr>
+				<tr>
+				<td>Change of First Name:</td>
+				<td><input type="text" name="firstname_edit" /></td>
+				</tr>
+				<tr>
+				<td>Change of Last Name:</td>
+				<td><input type="text" name="lastname_edit" /></td>
+				</tr>
+				<tr>
+				<td>Change of Phone Number:</td>
+				<td><input type="text" name="phone_edit" /></td>
+				</tr>
+				
+				<tr>
+				<td>Change of Department:</td>
+				<td>
+					<select name="departmentid_edit">
+						<option value="0">Default</option>' . PHP_EOL;
+	display_dropdown_department_list();
+	echo '					</select>
+				</td>
+				</tr>
+				<tr>
+				<td>Change of Billet:</td>
+				<td>
+					<select name="billetid_edit">
+						<option value="0">Default</option>' . PHP_EOL;
+	display_dropdown_billet_list();
+	echo '					</select>
+				</td>
+				</tr>
+				<tr>
+				<td>Change of Privilege Level: (Must be Administrator!)</td>
+				<td>
+					<select name="privilege_edit">
+						<option value="0">Default</option>
+						<option value="1">Student Administrator</option>
+						<option value="2">Staff Administrator</option>
+					</select>
+				</td>
+				<tr>
+				<td>Change of Password:</td>
+				<td><input type="password" name="password1_edit" /></td>
+				</tr>
+				<tr>
+				<td>Retype Password:</td>
+				<td><input type="password" name="password2_edit" /></td>
+				</tr>
+				<tr>
+				<td></td>
+				<td><input type="submit" name="Edit" /></td>
 				</tr>
 		</table>
 		</div>

@@ -70,13 +70,13 @@ function submit_add() {
 function submit_edit() {
 	global $template_footer;
 	global $mysql_connection;
-	global $billet_id, $billet_edit, $billet_departmentedit;
+	global $department_id, $department_edit, $department_root_billet_new;
 	check_vars();
 	
 	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	$sql = "UPDATE departments SET ";
-	if(($billet_edit == "") || ($billet_edit == NULL)) {
+	if(($department_edit == "") || ($department_edit == NULL)) {
 		$sql = $sql . "rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';";
 	} else {
 		$sql = $sql . "name='" . $department_edit . "', rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';";
@@ -86,27 +86,7 @@ function submit_edit() {
 	if($query_result) {
 		echo '<div class="alert alert-success" role="alert">Success.</div>';
 	} else {
-		echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</div>';
-	}
-	display_unsubmitted_page_contents();
-}
-
-/**
- * Sets variables, and inserts contents into database.
- */
-function submit_edit() {
-	global $template_footer;
-	global $mysql_connection;
-	global $department_id, $department_edit, $department_root_billet_new;
-	check_vars();
-	
-	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
-	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
-	$query_result = mysqli_query($mysql_connection, "UPDATE departments SET name='" . $department_edit . "', rootbilletid='" . $department_root_billet_new . "' WHERE departmentid='" . $department_id . "';");
-	if($query_result) {
-		echo '<div class="alert alert-success" role="alert">Success: billet name changed to ' . $department_edit . ".</div>";
-	} else {
-		echo '<div class="alert alert-danger" role="alert">Error: Could not edit billet.</p>';
+		echo '<div class="alert alert-danger" role="alert">Error: Could not edit department.</div>';
 	}
 	display_unsubmitted_page_contents();
 }

@@ -99,7 +99,7 @@ function submit() {
 						$destination_user = $destination_user_query->fetch_assoc();
 						$url_query = mysqli_query($mysql_connection, "SELECT * FROM recipients WHERE userid='" . $recipient . "' AND recallid='" . $recall_id . "' ORDER BY recipientid DESC LIMIT 1;");
 						$url = $url_query->fetch_assoc();
-						$generated_url = "https://gemini.ruinscraft.com/confirm.php?id=" . $url['recipientid'];
+						$generated_url = "http://gemini.ruinscraft.com/confirm.php?id=" . $url['recipientid'];
 						if($send_email) {
 							mail($destination_user['email'], "Recall", $generated_url);
 							//TODO Send email here

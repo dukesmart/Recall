@@ -56,7 +56,7 @@ function submit_add() {
 	global $mysql_connection, $billet_name, $billet_departmentid;
 	check_vars();
 	
-	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
+	echo get_nav_sidebar('billets', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	$query_result = mysqli_query($mysql_connection, "INSERT INTO billets (name, departmentid) VALUES ('" . $billet_name . "', '" . $billet_departmentid . "');");
 	if($query_result) {

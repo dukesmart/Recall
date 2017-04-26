@@ -33,7 +33,7 @@ function check_post() {
 	global $_POST, $template_header;
 	
 	echo $template_header;
-	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
+	echo get_nav_sidebar('users', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	
 	if(!isset($_POST['firstname']) || !isset($_POST['lastname']) || !isset($_POST['email']) || !isset($_POST['password1']) || !isset($_POST['password2'])) {

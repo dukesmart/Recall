@@ -140,7 +140,7 @@ function display_submitted_page_contents() {
 function display_unsubmitted_page_contents() {
 	global $template_footer;
 	
-	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
+	echo get_nav_sidebar('departments', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Departments</h1>' . PHP_EOL;
 	echo '<h4>Add a new department</h4>' . PHP_EOL;

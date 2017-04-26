@@ -52,7 +52,7 @@ function submit() {
 	check_vars();
 	
 	
-	echo get_nav_sidebar('index', isadmin($_SESSION['email']));
+	echo get_nav_sidebar('recall', isadmin($_SESSION['email']));
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	
 	$recall_date = date("Y-m-d H:i:s");
@@ -102,7 +102,7 @@ function submit() {
 						$generated_url = "http://gemini.ruinscraft.com/confirm.php?id=" . $url['recipientid'];
 						if($send_email) {
 							mail($destination_user['email'], "Recall", $generated_url);
-							//TODO Send email here
+							echo $destination_user['email'] . " " . $generated_url . " ";
 						}
 						if($send_text) {
 							//TODO Send text message here

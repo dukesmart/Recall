@@ -39,10 +39,10 @@ function display_battle_buddy_info() {
  * Display search results.
  */
 function search_results(){
-	if(isset($_POST['submit'])){
-		if(isset($_GET['go'])){
-			if(preg_match("/^[  a-zA-Z]+/", $_POST['name'])){
-				$name=$_POST['name'];
+	if(isset($_POST['query_userlist'])){
+		if(isset($_GET['searchquery'])){
+			if(preg_match("/^[  a-zA-Z]+/", $_POST['searchquery'])){
+				$name=$_POST['searchquery'];
 				//connect  to the database
 				$db=mysql_connect  ("servername", "username",  "password") or die ('I cannot connect to the database  because: ' . mysql_error());
 				//-select  the database to use
@@ -99,8 +99,9 @@ function submit() {
 	global $mysql_connection;
 	check_vars();
 
-	// TODO Search
+	//Search function
 	display_submitted_page_contents();
+	search_results();
 }
 /**
  * Filter submitted contents and set the variables locally.

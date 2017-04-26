@@ -42,6 +42,7 @@ function submit() {
 		echo $template_footer;
 		exit();
 	} else {
+		// Query success
 		$recipient = $recipient_query->fetch_assoc();
 		$status = '1';
 		$verification_query = mysqli_query($mysql_connection, "SELECT * FROM confirmations WHERE userid='" . $recipient['userid'] . "' AND recallid='" . $recipient['recallid']. "';");
@@ -51,7 +52,9 @@ function submit() {
 			echo $template_footer;
 			exit();
 		} else {
+			// Query success
 			if($verification_query->num_rows != 0) {
+				// There is already a confirmation
 				echo '<div class="alert alert-danger" role="alert">Error: Already confirmed. </div></main>' . PHP_EOL;
 				echo $template_footer;
 				exit();
@@ -63,6 +66,7 @@ function submit() {
 					echo $template_footer;
 					exit();
 				} else {
+					// Query success
 					display_submitted_page_contents();
 				}
 			}

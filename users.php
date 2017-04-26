@@ -129,6 +129,14 @@ function display_unsubmitted_page_contents() {
 				</td>
 				</tr>
 				<tr>
+				<td>Battle Buddy ID:</td>
+				<td>
+					<select name="battlebuddyid">
+						<option value="0">Default</option>
+					</select>
+				</td>
+				</tr>
+				<tr>
 				<td>Privilege Level:</td>
 				<td>
 					<select name="privilege">
@@ -137,14 +145,6 @@ function display_unsubmitted_page_contents() {
 						<option value="2">Staff Administrator</option>
 					</select>
 				</td>
-				<tr>
-				<td>Battle Buddy ID:</td>
-				<td>
-					<select name="battlebuddyid">
-						<option value="0">Default</option>
-					</select>
-				</td>
-				</tr>
 				<tr>
 				<td>Password:</td>
 				<td><input type="password" name="password1" /></td>
@@ -192,7 +192,7 @@ function display_dropdown_billet_list() {
 	if($query_billetlist) {
 		while($row = $query_billetlist->fetch_assoc()) {
 			echo '						';
-			echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
+			echo '<option value="' . $row['billetid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
 		}
 	} else {
 		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain billet list.</div>';
@@ -209,7 +209,7 @@ function display_dropdown_department_list() {
 	if($query_deptlist) {
 		while($row = $query_deptlist->fetch_assoc()) {
 			echo '						';
-			echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL; 
+			echo '<option value="' . $row['departmentid'] . '">' . $row['name'] . '</option>' . PHP_EOL;
 		}
 	} else {
 		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain department list.</div>';

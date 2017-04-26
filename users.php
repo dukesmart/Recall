@@ -220,7 +220,7 @@ function display_dropdown_department_list() {
 function display_user_list() {
 	global $mysql_connection;
 	
-	$query_userlist = mysqli_query($mysql_connection, "SELECT lastname, firstname, email, phone, billetid FROM users ORDER BY lastname LIMIT 500;");
+	$query_userlist = mysqli_query($mysql_connection, "SELECT lastname, firstname, email, phone, billetid, battlebuddyid FROM users ORDER BY lastname LIMIT 500;");
 	if($query_userlist) {
 		while($row = $query_userlist->fetch_assoc()) {
 			$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['billetid'] . "';");

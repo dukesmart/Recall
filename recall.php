@@ -104,7 +104,6 @@ function submit() {
 							mail($destination_user['email'], "Recall", $generated_url);
 							//TODO Send email here
 						}
-						
 						if($send_text) {
 							//TODO Send text message here
 						}

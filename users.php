@@ -131,9 +131,7 @@ function display_unsubmitted_page_contents() {
 				<tr>
 				<td>Battle Buddy ID:</td>
 				<td>
-					<select name="battlebuddyid">
-						<option value="0">Default</option>
-					</select>
+					<input type="text" name="battlebuddyid" />
 				</td>
 				</tr>
 				<tr>
@@ -172,6 +170,7 @@ function display_unsubmitted_page_contents() {
 		<th>Email Address</th>
 		<th>Phone Number</th>
 		<th>Billet</th>
+		<th>Battle Buddy ID</th>
 	</tr>' . PHP_EOL;
 	echo '</thead>' . PHP_EOL . '<tbody>' . PHP_EOL;
 	display_user_list();
@@ -227,7 +226,7 @@ function display_user_list() {
 		while($row = $query_userlist->fetch_assoc()) {
 			$query_billet = mysqli_query($mysql_connection, "SELECT * FROM billets WHERE billetid='" . $row['billetid'] . "';");
 			echo '	';
-			echo '<tr><td>' . $row['lastname'] . '</td><td>' . $row['firstname'] . '</td><td>' . $row['email'] . '</td><td>' . $row['phone'] . '</td>';
+			echo '<tr><td>' . $row['lastname'] . '</td><td>' . $row['firstname'] . '</td><td>' . $row['email'] . '</td><td>' . $row['phone'] . '</td><td>' . $row['battlebuddyid'] . '</td>';
 			if($query_billet && ($query_billet->num_rows == 1)) {
 				$billet = $query_billet->fetch_assoc();
 				echo '<td>' . $billet['name'] . '</td></tr>' . PHP_EOL;

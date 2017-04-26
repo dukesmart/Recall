@@ -102,7 +102,6 @@ function submit() {
 						$generated_url = "http://gemini.ruinscraft.com/confirm.php?id=" . $url['recipientid'];
 						if($send_email) {
 							mail($destination_user['email'], "Recall", $generated_url);
-							echo $destination_user['email'] . " " . $generated_url . " ";
 						}
 						if($send_text) {
 							//TODO Send text message here

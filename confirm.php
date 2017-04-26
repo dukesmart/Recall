@@ -67,7 +67,14 @@ function submit() {
 					exit();
 				} else {
 					// Query success
-					display_submitted_page_contents();
+					$update_user_status_query = mysqli_query($mysql_connection, "UPDATE users SET status='" . $status . "' WHERE userid='" . $recipient['userid'] . "';");
+					if(!$update_user_status_query) {
+						echo '<div class="alert alert-danger" role="alert">Error: Failed to update user status. </div></main>' . PHP_EOL;
+						echo $template_footer;
+						exit();
+					} else {
+						display_submitted_page_contents();
+					}
 				}
 			}
 		}

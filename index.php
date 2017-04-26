@@ -128,6 +128,7 @@ HERE;
  */
 function display_submitted_page_contents($user_query) {
 	global $template_footer;
+	global $mysql_connection;
 
 	/* User exists, continue */
 	$user = $user_query->fetch_assoc();
@@ -138,32 +139,46 @@ function display_submitted_page_contents($user_query) {
 	
 	echo '<main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">' . PHP_EOL;
 	echo '<h1>Dashboard</h1>' . PHP_EOL;
-	/* if(recall) {
-	 * 	echo '<p> There is not a recall in progress. </p>';
-	 * } else {
-	 * 	
-	 * }
-	 */
-	echo '</main>' . PHP_EOL;
 	
-	/*echo '<div class="content-container">';
-	echo '<p>Welcome, ' . $user['firstname'] . ' ' . $user['lastname'] . '.</p>';
-	if($user['privilege'] >= 2) {
-		echo '<form name="search" action="search.php" method="GET">' . PHP_EOL;
-		echo '<input type="text" name="searchquery" value="Search..." />' . PHP_EOL;
-		echo '<input type="submit" name="submit" value="Search" />' . PHP_EOL;
-		echo '</form>' . PHP_EOL;
+	$recent_recall_query = mysqli_query($mysql_connection, "SELECT * FROM recalls ORDER BY recallid DESC LIMIT 1");
+	if(!$recent_recall_query) {
+		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain most recent recall. </div>' . PHP_EOL;
+	} else {
+		$recent_recall = $recent_recall_query->fetch_assoc();
+		$recipients_query = mysqli_query($mysql_connection, "SELECT * FROM recipients WHERE recallid='" . $recent_recall['recallid'] . "';");
+		if(!$recipients_query) {
+			echo '<div class="alert alert-danger" role="alert">Error: Could not obtain list of recall recipients. </div>' . PHP_EOL;
+		} else {
+			echo '<h4>Unconfirmed Users</h4>' . PHP_EOL;
+			echo '<div class="table-responsive">' . PHP_EOL;
+			echo '<table class="table table-striped">' . PHP_EOL;
+			echo '<thead>' . PHP_EOL;
+			echo'<tr><th>Last Name</th><th>First Name</th><th>Email Address</th><th>Phone Number</th></tr>' . PHP_EOL;
+			
+			echo '</thead>' . PHP_EOL . '<tbody>' . PHP_EOL;
+			
+			while($recipient_row = $recipients_query->fetch_assoc()) {
+				$confirmation_query = mysqli_query($mysql_connection, "SELECT * FROM confirmations WHERE userid='" . $recipient_row['userid'] . "' AND recallid='" . $recent_recall['recallid'] . "';");
+				if(!$confirmation_query) {
+					echo '<tr><td colspan="4"><div class="alert alert-danger" role="alert">Error: Could not check user\'s confirmation status. </div></td></tr>' . PHP_EOL;
+				} else {
+					if($confirmation_query->num_rows == 0) {
+						$unconfirmed_user_query = mysqli_query($mysql_connection, "SELECT firstname, lastname, email, phone FROM users WHERE userid='" . $recipient_row['userid'] . "';");
+						if(!$unconfirmed_user_query) {
+							echo '<tr><td colspan="4"><div class="alert alert-danger" role="alert">Error: Could not obtain user information. </div></td></tr>' . PHP_EOL;
+						} else {
+							$unconfirmed_user = $unconfirmed_user_query->fetch_assoc();
+							echo '<tr><td>' . $unconfirmed_user['lastname'] . '</td><td>' . $unconfirmed_user['firstname'] . '</td><td>' . $unconfirmed_user['email'] . '</td><td>' . $unconfirmed_user['phone'] . '</td></tr>';
+						}
+					}
+				}
+			}
+			echo '</tbody>' . PHP_EOL;
+			echo '</table>' . PHP_EOL . '</div>' . PHP_EOL;
+		}
 	}
-	echo '</div>' . PHP_EOL;
-	echo '<div class="left-container">' . PHP_EOL . '<table class="left">' . PHP_EOL;
-	if($user['privilege'] >= 2) {
-		echo '<tr><td><a href="recall.php">Start a new recall</a></td></tr>
-		<tr><td><a href="adduser.php">Add a new user</a></td></tr>
-		<tr><td><a href="adddepartment.php">Add a new department</a></td></tr>
-		<tr><td><a href="addbillet.php">Add a new billet</a></td></tr>';
-		
-	}
-	echo '</table></div>' . PHP_EOL;*/
+	
+	echo '</main>' . PHP_EOL;
 	echo $template_footer;
 }
 

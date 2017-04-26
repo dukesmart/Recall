@@ -49,11 +49,11 @@ function check_post() {
  */
 function submit() {
 	global $mysql_error_connect, $template_footer;
-	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
+	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid, $user_battlebuddyid;
 	global $mysql_connection, $template_footer;
 	check_vars();
 	
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "');");
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid, battlebuddyid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "', '"$user_battlebuddyid);");
 	if($query_result) {
 		echo '<div class="alert alert-success" role="alert">Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</div>';
 	} else {
@@ -67,13 +67,14 @@ function submit() {
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
-	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid;
+	global $user_hashed_password, $user_privilege, $user_firstname, $user_lastname, $user_email, $user_phone, $user_billetid, $user_battlebuddyid;
 	$user_firstname = filter_var($_POST['firstname'], FILTER_SANITIZE_STRING);
 	$user_lastname = filter_var($_POST['lastname'], FILTER_SANITIZE_STRING);
 	$user_email = filter_var(strtolower($_POST['email']), FILTER_SANITIZE_EMAIL);
 	$user_phone = filter_var(strtolower($_POST['phone']), FILTER_SANITIZE_STRING);
 	$user_privilege = filter_var($_POST['privilege'], FILTER_SANITIZE_NUMBER_INT);
 	$user_billetid = filter_var($_POST['billetid'], FILTER_SANITIZE_NUMBER_INT);
+	$user_battlebuddyid = filter_var($_POST['battlebuddyid'], FILTER_SANITIZE_NUMBER_INT);
 	
 	if($_POST['password1'] == $_POST['password2']) {
 		$user_hashed_password = filter_var(hash('sha256', $_POST['password1']), FILTER_SANITIZE_STRING);
@@ -109,7 +110,6 @@ function display_unsubmitted_page_contents() {
 				<td>Phone Number:</td>
 				<td><input type="text" name="phone" /></td>
 				</tr>
-				
 				<tr>
 				<td>Department:</td>
 				<td>
@@ -149,6 +149,12 @@ function display_unsubmitted_page_contents() {
 				<td></td>
 				<td><input type="submit" name="Submit" /></td>
 				</tr>
+				<td>Battle Buddy ID:</td>
+				<td>
+					<select name="battlebuddyid">
+						<option value="0">Default</option>
+					</select>
+				</td>
 		</table>
 		</div>
 </form>' . PHP_EOL;

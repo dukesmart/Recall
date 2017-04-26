@@ -44,7 +44,7 @@ function submit() {
 	} else {
 		// Query success
 		$recipient = $recipient_query->fetch_assoc();
-		$status = '1';
+		$status = 1;
 		$verification_query = mysqli_query($mysql_connection, "SELECT * FROM confirmations WHERE userid='" . $recipient['userid'] . "' AND recallid='" . $recipient['recallid']. "';");
 		if(!$verification_query) {
 			// Query failed

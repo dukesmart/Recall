@@ -94,7 +94,7 @@ function submit_edit() {
 /**
  * Sets variables, and inserts contents into database.
  */
-function submit_edit() {
+function submit_edit_both() {
 	global $template_footer;
 	global $mysql_connection;
 	global $department_id, $department_edit, $department_root_billet_new;

@@ -53,7 +53,7 @@ function submit() {
 	global $mysql_connection, $template_footer;
 	check_vars();
 	
-	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid, battlebuddyid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "', '"$user_battlebuddyid);");
+	$query_result = mysqli_query($mysql_connection, "INSERT INTO users (password, privilege, firstname, lastname, email, phone, billetid, battlebuddyid) VALUES ('" . $user_hashed_password . "', '" . $user_privilege . "', '" . $user_firstname . "', '" . $user_lastname . "', '" . $user_email . "', '" . $user_phone . "', '" . $user_billetid . "', '" . $user_battlebuddyid . "');");
 	if($query_result) {
 		echo '<div class="alert alert-success" role="alert">Success: ' . $user_firstname . ' ' . $user_lastname . ' added.</div>';
 	} else {
@@ -138,6 +138,14 @@ function display_unsubmitted_page_contents() {
 					</select>
 				</td>
 				<tr>
+				<td>Battle Buddy ID:</td>
+				<td>
+					<select name="battlebuddyid">
+						<option value="0">Default</option>
+					</select>
+				</td>
+				</tr>
+				<tr>
 				<td>Password:</td>
 				<td><input type="password" name="password1" /></td>
 				</tr>
@@ -149,12 +157,6 @@ function display_unsubmitted_page_contents() {
 				<td></td>
 				<td><input type="submit" name="Submit" /></td>
 				</tr>
-				<td>Battle Buddy ID:</td>
-				<td>
-					<select name="battlebuddyid">
-						<option value="0">Default</option>
-					</select>
-				</td>
 		</table>
 		</div>
 </form>' . PHP_EOL;

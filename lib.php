@@ -78,7 +78,7 @@ function get_nav_sidebar($page, $isadmin) {
 				</li>
 			</ul>
 			<form class="form-inline mt-2 mt-md-0" action="search.php" method="POST">
-				<input class="form-control mr-sm-2" type="text" placeholder="Search">
+				<input class="form-control mr-sm-2" name="searchquery" type="text" placeholder="Search">
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 			</form>
 		</div>

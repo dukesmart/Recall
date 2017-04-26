@@ -5,12 +5,14 @@
 */
 @include 'template.php';
 @include 'lib.php';
+
 if(mysql_setup()) {
 	session_start();
 	check_session();
 } else {
 	exit();
 }
+
 /**
  * Display Battle Buddy info.
  */
@@ -35,6 +37,7 @@ function display_battle_buddy_info() {
 		echo '<div class="alert alert-danger" role="alert">Error: Could not obtain battle buddy info.</div>';
 	}
 }
+
 /**
  * Display search results.
  */
@@ -68,6 +71,7 @@ function search_results(){
 		}
 	}
 }
+
 /**
  * Check to see if a user has previously logged in.
  */
@@ -80,6 +84,7 @@ function check_session() {
 		header("location:index.php");
 	}
 }
+
 /**
  *  Check POST variables to see if are contents to submit.
  */
@@ -91,6 +96,7 @@ function check_post() {
 		submit();
 	}
 }
+
 /**
  * Sets variables, connects to database, submits query to database.
  */
@@ -103,12 +109,14 @@ function submit() {
 	display_submitted_page_contents();
 	search_results();
 }
+
 /**
  * Filter submitted contents and set the variables locally.
  */
 function check_vars() {
 	$sanitized_searchquery = filter_var($_GET['searchquery'], FILTER_SANITIZE_STRING);
 }
+
 /**
  * Display the contents of the page after the form has been submitted.
  */
@@ -122,6 +130,7 @@ function display_submitted_page_contents() {
 
 	echo $template_footer;
 }
+
 /**
  * Display the submission form page contents.
  */
